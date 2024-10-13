@@ -3,6 +3,8 @@ import { SafeAreaView, View, FlatList, Text, ActivityIndicator, StyleSheet } fro
 import { StatusBar } from 'expo-status-bar'
 import { MessageItem } from '@/components/MessageItem'
 import { TypingZone } from '@/components/TypingZone'
+import { AnimatedSocket } from '@/components/AnimatedSocket';
+
 
 enum streamStatusValues {
     WRITING = "writing",
@@ -47,7 +49,7 @@ export const InitialChat = () => {
     }, [])
 
     useEffect(() => {
-        console.log('NEW MESSAGE!', messages)
+        console.log('NEW MESSAGE!', dataFetched.length)
         //actualizamos datafetch
         setDataFetched([...dataFetched, {id: dataFetched.length+1, text: messages[messages.length-1]}])
 
@@ -63,6 +65,7 @@ export const InitialChat = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+    {dataFetched && dataFetched.length < 5 ? (<AnimatedSocket key="animatedSocket"/>) : null}
     {/* <StatusBar style='dark' /> */}
             <FlatList
                 ref={flatListRef} // To scroll to the end of the list every time a new message is sent or received

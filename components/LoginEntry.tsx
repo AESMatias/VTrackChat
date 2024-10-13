@@ -9,8 +9,12 @@ import { opacity } from 'react-native-reanimated/lib/typescript/reanimated2/Colo
 
 import handleLoginFunc from '@/components/HandleLogin';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
+
 
 const LoginEntry = () => {
+
+const navigation = useNavigation();
 
 
 const [username, setUsername] = useState('');
@@ -87,6 +91,7 @@ const animateAndNavigate = () => {
   ]).start(() => {
     // Navigate after animations complete
     // router.navigate("/home");
+    navigation.navigate('InitialChat');
 
     // Reset animation values after a delay
     setTimeout(() => {
@@ -260,6 +265,7 @@ const backgroundImageLINK = require('../assets/images/Entrybackground.jpg') //TO
 
         }} />
          */}
+
       <Animated.View
         style={{
           flex: Platform.OS === 'web' ? 0.85 : 0.98,
@@ -289,9 +295,6 @@ const backgroundImageLINK = require('../assets/images/Entrybackground.jpg') //TO
             >
 
 
-
- 
-
         <Animated.Text 
                     style={[
                       styles.welcomeText,
@@ -307,7 +310,9 @@ const backgroundImageLINK = require('../assets/images/Entrybackground.jpg') //TO
             { translateY: topValueLogo },
             {scale: scaleValue},
           ],
-        }]} />
+        }]} >
+          
+        </Animated.Image>
 
 
 
