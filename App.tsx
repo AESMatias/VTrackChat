@@ -2,13 +2,13 @@ import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import LoginEntry from "@/components/LoginEntry";
-import { StackNavigator } from '@/views/routes/StackNavigator';
+import { SideDrawer } from '@/views/routes/SideDrawer';
 import { NavigationContainer } from '@react-navigation/native';
 
 export default function App() {
   return (
     <NavigationContainer>
-    <StackNavigator />
+    <SideDrawer />
       {/* <LoginEntry /> */}
       <StatusBar style="dark" />
     </NavigationContainer>

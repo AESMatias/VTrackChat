@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 
 export  const AnimatedSocket = ({}) => {
-    // Create an array of 37 animated values (hex bricks)
-    const animations = Array.from({ length: 37 }, () => new Animated.Value(0));
+
+    // const animations = Array.from({ length: 37 }, () => new Animated.Value(0));
+    // The useRef avoids the re-rendering of the component when the father component re-renders
+    const animations = useRef(Array.from({ length: 37 }, () => new Animated.Value(0))).current;
 
     const startAnimation = () => {
         animations.forEach((animation, index) => {
@@ -45,7 +47,7 @@ export  const AnimatedSocket = ({}) => {
 
     React.useEffect(() => {
         startAnimation();
-        console.log('animacion')
+        console.log('animacio')
     }, []);
 
     // Calculate position for circular arrangement

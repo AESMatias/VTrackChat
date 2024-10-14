@@ -1,7 +1,7 @@
 import React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const BackgroundGradient = () => {
+export const BackgroundGradient = () => {
   return (
     <LinearGradient
       colors={['hsl(210, 100%, 20%)', 'hsl(220, 90%, 15%)', 'hsl(230, 80%, 10%)']}
@@ -11,5 +11,3 @@ const BackgroundGradient = () => {
     />
   );
 };
-
-export default BackgroundGradient;
