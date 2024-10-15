@@ -7,9 +7,21 @@ import { OPENAI_API_KEY } from '@env';
 import OpenAI from "openai";
 
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
+export const openai = new OpenAI({
+    apiKey: OPENAI_API_KEY,
+});
+
+
+export const getEmbedding = async (prompt: string) => {
+
+    const embedding = await openai.embeddings.create({
+      model: "text-embedding-3-small",
+      input: `${prompt}`,
+      encoding_format: "float",
+    });
+    
+    return embedding;
+  };
 
 export const queryOpenAIForImage = async (imageUrl: string, prompt: string) => {
 
@@ -24,7 +36,7 @@ export const queryOpenAIForImage = async (imageUrl: string, prompt: string) => {
             {
                 type: "image_url",
                 image_url: {
-                url: imageUrl,
+                url: `${imageUrl}`,
                 },
             },
             ],
@@ -36,7 +48,11 @@ export const queryOpenAIForImage = async (imageUrl: string, prompt: string) => {
     return response.choices[0].message.content;
 };
 
-export const queryOpenAI = async (prompt, messages) => {
+export const queryOpenAI = async (prompt: string, messages) => {
+
+    // const embeddingResponse = await getEmbedding(prompt);
+    // console.log('embedding', embeddingResponse.data[0].embedding);
+    
     messages = []; // TODO: SOLVE THIS!
     const apiKey = process.env.OPENAI_API_KEY;
     const modelName = "gpt-4o-mini";
@@ -48,7 +64,7 @@ export const queryOpenAI = async (prompt, messages) => {
             messages = [
                 {
                     role: "user",
-                    content: prompt
+                    content: `${prompt}`
                 }
             ]
         }
@@ -68,19 +84,19 @@ export const queryOpenAI = async (prompt, messages) => {
 
                 lastFourMessages.push({
                     role: "user",
-                    content: actualQuery
+                    content: `${actualQuery}`
                 });
 
                 lastFourMessages.push({
                     role: "assistant",
-                    content: actualResponse
+                    content: `${actualResponse}`
                 });
             }
 
             messages = [
                 {
                     role: "user",
-                    content: prompt
+                    content: `${prompt}`
                 },
                 ...lastFourMessages
             ]
@@ -105,8 +121,6 @@ export const queryOpenAI = async (prompt, messages) => {
             model: modelName,
             max_tokens: 2000
         });
-        console.log('LOS MSJ SONNNN', messages)
+        // console.log('LOS MSJ SONNNN', messages)
         return response.choices[0].message.content;
     }
-
-module.exports = { queryOpenAI, queryOpenAIForImage };

@@ -4,6 +4,10 @@ import { StatusBar } from 'expo-status-bar'
 import { MessageItem } from '@/components/MessageItem'
 import { TypingZone } from '@/components/TypingZone'
 import { AnimatedSocket } from '@/components/AnimatedSocket';
+import { initDatabase, insertQuery} from '@/components/services/SQLite/SQLite'
+import { QueryInterface } from '@/components/services/SQLite/types'
+import { getEmbedding } from '@/components/services/openAIQueries'
+
 
 
 enum streamStatusValues {
@@ -28,6 +32,7 @@ export const InitialChat = () => {
     const handlePress = () => {
         console.log('Pressed')
     }
+    
     const datatoPUT = [
         {
             id: 1,
@@ -45,11 +50,51 @@ export const InitialChat = () => {
 
     useEffect(() => {
         setDataFetched( () => datatoPUT)
+        try{
+            initDatabase();
+        } catch (error){
+            console.log('Error in the database', error)
+        }
         
     }, [])
 
+
+    const processQuery = async (query: string) => {
+
+        let queryObject = {
+            queryText: query,
+            date: new Date(),
+            category: 'general',
+            username: 'user',
+            summary: 'summary',
+            context: 'context',
+            embeddings: [],
+            tags: ['tag1', 'tag2', 'tag3'],
+        }
+
+        try {
+            const embeddingResponse = await getEmbedding(queryObject.queryText);
+            queryObject.embeddings = embeddingResponse;
+
+            // Insert the query into the SQLite database
+            insertQuery(queryObject);
+
+        } catch (error) {
+            console.error('Error processing query in initial chat tsx:', error)
+        }
+    }
+
+
     useEffect(() => {
-        console.log('NEW MESSAGE!', dataFetched.length)
+        // console.log('NEW MESSAGE!', dataFetched.length)
+
+        console.warn('Messages:', dataFetched[dataFetched.length-1])
+        //TODO: For now, we use the last message to send to the server, but it is
+        //not the last! Should be solved!
+
+        //TODO: We should filter in order to gather only the messages that come from the user!
+        processQuery(dataFetched[dataFetched.length-1]?.text)
+
         //actualizamos datafetch
         setDataFetched([...dataFetched, {id: dataFetched.length+1, text: messages[messages.length-1]}])
 
