@@ -1,16 +1,17 @@
 import { Animated, Easing, Platform } from "react-native";
-import { handleLoginFunc } from "@/components/HandleLogin";
 
-export const LoginAndNavigate = async (username: string ,password: string, 
+
+export const LoginAndNavigate = async (
     scaleValue: Animated.Value, 
     scaleValueUsername: Animated.Value, colorValue: 
     Animated.Value, circleScale: Animated.Value, 
     opacityValue: Animated.Value, rotation: Animated.Value, 
     opacityLogin: Animated.Value, opacityLoginText: Animated.Value, 
-    topValueLogo: Animated.Value, topValueLogoAnimation: Animated.Value
+    topValueLogo: Animated.Value, topValueLogoAnimation: Animated.Value,
+    userIsLogged: boolean
 ) => {
 
-    const isUserLogged = await handleLoginFunc(username,password);
+    return new Promise( (resolve, reject) =>{
 
     const scaleAnimation = Animated.timing(scaleValue, {
       toValue: Platform.OS === 'web' ? 1.6 : 0.8,
@@ -57,20 +58,21 @@ export const LoginAndNavigate = async (username: string ,password: string,
       useNativeDriver: true,
     });
 
-    if (!isUserLogged) {
-      setTimeout(() => {
-        // router.navigate("/views/Login");
-        scaleValue.setValue(1);
-        scaleValueUsername.setValue(1);
-        colorValue.setValue(0);
-        circleScale.setValue(1);
-        opacityValue.setValue(0);
-
-        rotation.setValue(0);
-        opacityLogin.setValue(0);
-        opacityLoginText.setValue(1);
-        topValueLogo.setValue(0);
-      }, 2000); // Adjust delay as needed
+    if (!userIsLogged) {
+        // Reset animation values after a delay
+        setTimeout(() => {
+          // router.navigate("/views/Login");
+          scaleValue.setValue(1);
+          scaleValueUsername.setValue(1);
+          colorValue.setValue(0);
+          circleScale.setValue(1);
+          opacityValue.setValue(0);
+          rotation.setValue(0);
+          opacityLogin.setValue(0);
+          opacityLoginText.setValue(1);
+          topValueLogo.setValue(0);
+          alert("Invalid credentials");
+        }, 500); // Adjust delay
       return;
     }
     // Run animations in sequence
@@ -92,9 +94,8 @@ export const LoginAndNavigate = async (username: string ,password: string,
       //   }),
       // ]),
     ]).start(() => {
-      if (handleLoginFunc({username,password})) {
-        // Navigate after animations complete
-        // router.navigate("/home");
+
+      if (userIsLogged) {
           // Reset animation values after a delay
           setTimeout(() => {
             // router.navigate("/views/Login");
@@ -108,26 +109,14 @@ export const LoginAndNavigate = async (username: string ,password: string,
             opacityLogin.setValue(0);
             opacityLoginText.setValue(1);
             topValueLogo.setValue(0);
-          }, 600); // Adjust delay as needed
-        
+            resolve(true); //Resolve the promise after 
+          }, 300); // Adjust delay as needed
       }
-      else{
-        // Reset animation values after a delay
-        setTimeout(() => {
-          // router.navigate("/views/Login");
-          scaleValue.setValue(1);
-          scaleValueUsername.setValue(1);
-          colorValue.setValue(0);
-          circleScale.setValue(1);
-          opacityValue.setValue(0);
-          rotation.setValue(0);
-          opacityLogin.setValue(0);
-          opacityLoginText.setValue(1);
-          topValueLogo.setValue(0);
-          alert("Invalid credentials");
-        }, 3000); // Adjust delay
-      }
+
     });
+
+  });
+
   };
 
 export const animateAndNavigate = (
@@ -192,16 +181,12 @@ export const animateAndNavigate = (
         })
       ]),
     ]).start(() => {
-      // Navigate after animations complete
-      // router.navigate("/home");
-      navigation.navigate('InitialChat');
-
       // Reset animation values after a delay
       setTimeout(() => {
         scaleValue.setValue(1);
         colorValue.setValue(0);
         circleScale.setValue(1);
         opacityValue.setValue(0);
-      }, 600); // Adjust delay as needed
+      }, 5000); // Adjust delay as needed
     });
 };

@@ -7,7 +7,7 @@ import { AnimatedSocket } from '@/components/AnimatedSocket';
 import { initDatabase, insertQuery} from '@/components/services/SQLite/SQLite'
 import { QueryInterface } from '@/components/services/SQLite/types'
 import { getEmbedding } from '@/components/services/openAIQueries'
-
+import { useUserProfileStore } from '@/store/userProfile'
 
 
 enum streamStatusValues {
@@ -29,10 +29,15 @@ export const InitialChat = () => {
     const [currentImage, setCurrentImage] = useState('');
     const flatListRef = useRef(null);
 
+    const username = useUserProfileStore(state => state.username)
+    const currentPlan = useUserProfileStore(state => state.currentPlan)
+    const tokens = useUserProfileStore(state => state.tokens)
+    const loggedIn = useUserProfileStore(state => state.loggedIn)
+
     const handlePress = () => {
         console.log('Pressed')
     }
-    
+
     const datatoPUT = [
         {
             id: 1,
@@ -55,7 +60,6 @@ export const InitialChat = () => {
         } catch (error){
             console.log('Error in the database', error)
         }
-        
     }, [])
 
 

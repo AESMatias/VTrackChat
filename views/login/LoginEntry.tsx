@@ -8,8 +8,11 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Asset } from 'expo-asset';
 import { BlurView } from 'expo-blur';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { handleLoginFunc } from "@/utils/HandleLogin";
+
 
 import { LoginAndNavigate, animateAndNavigate } from '@/views/login/Animations';
+import { SubscriptionPlan, useUserProfileStore } from '@/store/userProfile';
 
 const LoginEntry = () => {
 
@@ -17,7 +20,6 @@ const LoginEntry = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
 
   const scaleValue = useRef(new Animated.Value(1)).current;
   const scaleValueUsername = useRef(new Animated.Value(1)).current;
@@ -37,6 +39,8 @@ const LoginEntry = () => {
     useNativeDriver: true,
   });
 
+  const updateProfileStatus = useUserProfileStore( state => state.updateProfileStatus);
+
   const iluminateBorder = () => (username === "" && password === "" ? 'black' : 'cyan');
 
   const rotateInterpolate = rotation.interpolate({
@@ -47,6 +51,20 @@ const LoginEntry = () => {
   const LOGOLINK = 'https://avatars.githubusercontent.com/u/119653204?v=4' //TODO: CHANGE
 
   const backgroundImageUri = Asset.fromModule(require('@/assets/images/back1.jpg')).uri;
+
+  const handleLogin = async () => {
+
+    const isUserLogged = await handleLoginFunc(username,password);
+
+    await LoginAndNavigate(scaleValue, scaleValueUsername, 
+      colorValue, circleScale, opacityValue, rotation, opacityLogin, opacityLoginText,
+      topValueLogo, topValueLogoAnimation, isUserLogged);
+
+    if (isUserLogged) {
+      updateProfileStatus( username, SubscriptionPlan.Normal, 1222137, true);
+      navigation.navigate('InitialChat');
+    }
+  }
 
     return (
       <View style={styles.container}>
@@ -153,11 +171,7 @@ const LoginEntry = () => {
 
 
 
-            <Pressable onPress={() => {
-          LoginAndNavigate(username, password, scaleValue, scaleValueUsername, 
-            colorValue, circleScale, opacityValue, rotation, opacityLogin, opacityLoginText,
-             topValueLogo, topValueLogoAnimation);
-      }}
+            <Pressable onPress={handleLogin}
               
               style={({ pressed }) => [
                 { 
