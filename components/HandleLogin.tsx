@@ -1,7 +1,7 @@
 
 
 
-export default function handleLoginFunc( {username, password} ) {
+export const handleLoginFunc = async (username: string, password: string) => {
   if (username === "admin" && password === "admin") {
     return true;
   } 

@@ -1,5 +1,5 @@
 import { InitialChat } from '@/views/InitialChat';
-import LoginEntry from "@/components/LoginEntry";
+import LoginEntry from "@/views/login/LoginEntry";
 import { createDrawerNavigator, DrawerContentComponentProps,
     DrawerContentScrollView, DrawerItemList, DrawerItem
  } from '@react-navigation/drawer';

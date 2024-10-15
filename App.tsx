@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import LoginEntry from "@/components/LoginEntry";
+import LoginEntry from "@/views/login/LoginEntry";
 import { SideDrawer } from '@/views/routes/SideDrawer';
 import { NavigationContainer } from '@react-navigation/native';
 
