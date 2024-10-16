@@ -22,6 +22,7 @@ export const InitialChat = () => {
 
     const [dataFetched, setDataFetched] = useState<{ id: number; text: string; }[]>([]);
     const [refreshing, setRefreshing] = useState(false)
+    const [isMicrophoneListening, setIsMicrophoneListening] = useState(false)
 
     const [text, setText] = useState('Hello, can you tell me something interesting? Be quick! Not much text')
     const [streamStatus, setStreamStatus] = useState(streamStatusValues.FINISHED)
@@ -110,7 +111,7 @@ export const InitialChat = () => {
         
     },[messages])
     
-    const lastMessage = messages[messages.length - 1];
+    // const lastMessage = messages[messages.length - 1];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -138,7 +139,10 @@ export const InitialChat = () => {
             />
             <TypingZone text={text} setText={setText} setStreamStatus={setStreamStatus}
             streamStatus={streamStatus} messages={messages} 
-            setMessages={setMessages}/>
+            setMessages={setMessages}
+            isMicrophoneListening = {isMicrophoneListening}
+            setIsMicrophoneListening = {setIsMicrophoneListening}
+            />
 
 </SafeAreaView>
   )

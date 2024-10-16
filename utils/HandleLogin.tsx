@@ -3,7 +3,7 @@
 
 export const handleLoginFunc = async (username: string, password: string) => {
 
-  if (username === "admin" && password === "admin") {
+  if (username === "" && password === "") {
     return true;
   } 
 

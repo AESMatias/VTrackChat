@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import { queryOpenAI, queryOpenAIForImage } from '@/components/services/openAIQueries';
+import { VoiceRecognitionButton } from '@/components/VoiceRecognition'
 
 interface TypingZoneProps {
     // Props definition
@@ -21,10 +22,14 @@ interface TypingZoneProps {
     setMessages: (messages: string[]) => void;
     streamStatus: streamStatusValues;
     setStreamStatus: (status: streamStatusValues) => void;
+    isMicrophoneListening: boolean;
+    setIsMicrophoneListening: (isListening: boolean) => void;
 }
 
-export const TypingZone = ({text,setMessages,setText,messages,setStreamStatus,streamStatus}:TypingZoneProps) => {
+export const TypingZone = ({text,setMessages,setText,messages,
+    setStreamStatus,streamStatus, isMicrophoneListening, setIsMicrophoneListening}:TypingZoneProps) => {
 
+    const [voiceToText, setVoiceToText] = useState('')
 
     const handleSendMessage = async () => {
         setMessages([...messages, text])
@@ -52,6 +57,9 @@ export const TypingZone = ({text,setMessages,setText,messages,setStreamStatus,st
             {/* TODO: This should be a personalized component */}
             <Text style={styles.sendLogo}>SEND!</Text>
         </Pressable>
+        <VoiceRecognitionButton isMicrophoneListening={isMicrophoneListening}
+        setIsMicrophoneListening={setIsMicrophoneListening}
+        />
     </View>
   )
 }

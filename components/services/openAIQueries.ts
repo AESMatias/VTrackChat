@@ -1,27 +1,41 @@
 // require('dotenv').config();
 // const OpenAI  = require('openai');
 import Constants from 'expo-constants';
-
-import { OPENAI_API_KEY } from '@env';
-
 import OpenAI from "openai";
 
 
-export const openai = new OpenAI({
-    apiKey: OPENAI_API_KEY,
-});
+// import { OPENAI_API_KEY } from '@env';
+
+// const OPENAI_API_KEY = process.env.OPENAI_API_KEY || Constants.manifest.extra.OPENAI_API_KEY;
+const OPENAI_API_KEY = 'KEYYYY';
+
+
+let openai;
+
+if (OPENAI_API_KEY) {
+    openai = new OpenAI({
+        apiKey: OPENAI_API_KEY || "AAA",
+    });
+} else {
+    console.error("OpenAI API key is not defined.");
+}
 
 
 export const getEmbedding = async (prompt: string) => {
-
-    const embedding = await openai.embeddings.create({
-      model: "text-embedding-3-small",
-      input: `${prompt}`,
-      encoding_format: "float",
-    });
-    
-    return embedding;
-  };
+    try{
+        const embedding = await openai.embeddings.create({
+        model: "text-embedding-3-small",
+        input: `${prompt}`,
+        encoding_format: "float",
+        });
+        
+        return embedding;
+        }
+    catch (error){
+        console.error('Error in the getEmbedding function:', error)
+    }
+}
+  ;
 
 export const queryOpenAIForImage = async (imageUrl: string, prompt: string) => {
 
@@ -49,14 +63,15 @@ export const queryOpenAIForImage = async (imageUrl: string, prompt: string) => {
 };
 
 export const queryOpenAI = async (prompt: string, messages) => {
+    try{
 
     // const embeddingResponse = await getEmbedding(prompt);
     // console.log('embedding', embeddingResponse.data[0].embedding);
     
     messages = []; // TODO: SOLVE THIS!
-    const apiKey = process.env.OPENAI_API_KEY;
+    // const apiKey = process.env.OPENAI_API_KEY;
     const modelName = "gpt-4o-mini";
-    const client = new OpenAI({apiKey});
+    const client = new OpenAI({OPENAI_API_KEY}); // TODO: Fix this, this instance is already defined above!
     let response = '';
 
         if (!messages) {
@@ -123,4 +138,7 @@ export const queryOpenAI = async (prompt: string, messages) => {
         });
         // console.log('LOS MSJ SONNNN', messages)
         return response.choices[0].message.content;
+    } catch (error){
+        console.error('Error in the queryOpenAI function:', error)
     }
+}
