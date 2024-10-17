@@ -4,10 +4,7 @@ import Constants from 'expo-constants';
 import OpenAI from "openai";
 
 
-// import { OPENAI_API_KEY } from '@env';
-
-// const OPENAI_API_KEY = process.env.OPENAI_API_KEY || Constants.manifest.extra.OPENAI_API_KEY;
-const OPENAI_API_KEY = 'KEYYYY';
+import { OPENAI_API_KEY } from '@env';
 
 
 let openai;
@@ -63,8 +60,8 @@ export const queryOpenAIForImage = async (imageUrl: string, prompt: string) => {
 };
 
 export const queryOpenAI = async (prompt: string, messages) => {
-    try{
 
+    try{
     // const embeddingResponse = await getEmbedding(prompt);
     // console.log('embedding', embeddingResponse.data[0].embedding);
     
@@ -139,6 +136,8 @@ export const queryOpenAI = async (prompt: string, messages) => {
         // console.log('LOS MSJ SONNNN', messages)
         return response.choices[0].message.content;
     } catch (error){
-        console.error('Error in the queryOpenAI function:', error)
+        // console.error('Error in the queryOpenAI function:', error)
+        //For now, we just return some generic response:
+        return '---- RESPONSE for: ' + prompt;
     }
 }

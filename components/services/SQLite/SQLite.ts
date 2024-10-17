@@ -50,7 +50,7 @@ export const initDatabase = async () => {
     // `getAllAsync()` is useful when you want to get all results as an array of objects.
     const allRows = await db.getAllAsync('SELECT * FROM test');
     for (const row of allRows) {
-      console.log(row.id, row.value, row.intValue);
+      // console.log(row.id, row.value, row.intValue);
     }
 
   } catch (error) {
@@ -70,7 +70,7 @@ const cosineSimilarity = (vecA, vecB) => {
   vecB = JSON.parse(vecB); // Convert to array (object)
 
 
-  console.log(typeof vecA, typeof vecB)
+  // console.log(typeof vecA, typeof vecB)
 
     // Validate that both vectors are arrays
     if (!Array.isArray(vecA) || !Array.isArray(vecB)) {
@@ -80,13 +80,13 @@ const cosineSimilarity = (vecA, vecB) => {
       return -1;
     }
 
-  console.log('vector 2 empieza con estos 20 caraceteres>', vecB.slice(0, 20))
+  // console.log('vector 2 empieza con estos 20 caraceteres>', vecB.slice(0, 20))
 
   try{
     const dotProduct = numeric.dot(vecA, vecB);
     const normA = numeric.norm2(vecA);
-    console.log('normA:', normA)
-    console.log('normB:', numeric.norm2(vecB))
+    // console.log('normA:', normA)
+    // console.log('normB:', numeric.norm2(vecB))
     const normB = numeric.norm2(vecB);
 
     // If they are the same, return -1 because we don't want to consider the same query
@@ -116,9 +116,9 @@ export const insertQuery = async (QueryObject: QueryInterface) => {
 
 
     const queryEmbedding = QueryObject?.embeddings?.data[0]?.embedding || [-1];
-    const queryCategory = QueryObject.category;
-    const querySummary = QueryObject.summary;
-    const queryText = QueryObject.queryText;
+    const queryCategory = QueryObject.category || 'general';
+    const querySummary = QueryObject.summary || 'No summary provided';
+    const queryText = QueryObject.queryText || 'No query text provided';
 
     // `runAsync()` is useful when you want to execute some write operations.
     const result = await db.runAsync('INSERT INTO queries (queryText, date, category, embedding) VALUES (?, ?, ?, ?)',

@@ -2,6 +2,11 @@ import { useState, useEffect } from 'react'
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import { queryOpenAI, queryOpenAIForImage } from '@/components/services/openAIQueries';
 import { VoiceRecognitionButton } from '@/components/VoiceRecognition'
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { SpeechRecordingStatus, useUserProfileStore } from '@/store/userProfile';
+import { RecordingSpeechAnimation } from '@/components/RecordingSpeechAnimation';
+import { generalColors } from '@/components/generalColors';
+
 
 interface TypingZoneProps {
     // Props definition
@@ -20,20 +25,20 @@ interface TypingZoneProps {
     setText: (text: string) => void;
     messages: string[];
     setMessages: (messages: string[]) => void;
-    streamStatus: streamStatusValues;
-    setStreamStatus: (status: streamStatusValues) => void;
     isMicrophoneListening: boolean;
     setIsMicrophoneListening: (isListening: boolean) => void;
 }
 
-export const TypingZone = ({text,setMessages,setText,messages,
-    setStreamStatus,streamStatus, isMicrophoneListening, setIsMicrophoneListening}:TypingZoneProps) => {
+export const TypingZone = ({text,setMessages,setText,messages, isMicrophoneListening, setIsMicrophoneListening}:TypingZoneProps) => {
 
     const [voiceToText, setVoiceToText] = useState('')
+
+    const speechRecordingStatus = useUserProfileStore(state => state.speechRecordingStatus)
 
     const handleSendMessage = async () => {
         setMessages([...messages, text])
         try{
+            setText('')
             const queryResponse = await queryOpenAI(text, messages)
             setMessages([...messages, queryResponse])
         }catch(e){
@@ -47,19 +52,27 @@ export const TypingZone = ({text,setMessages,setText,messages,
 
   return (
     <View style={styles.container}>
-        <View>
-            <TextInput onChangeText={handleInputChange}>
-                <Text style={styles.inputText}>{text}</Text>
+        <View style={styles.textInputContainer}>
+
+            {speechRecordingStatus === SpeechRecordingStatus.Recording 
+            ? <RecordingSpeechAnimation></RecordingSpeechAnimation>
+            : <TextInput style={styles.textInput} placeholder='What do you want to say?'
+            onChangeText={handleInputChange}>
+                <Text>{text}</Text>
             </TextInput>
+            }
+
         </View>
+
+        <VoiceRecognitionButton setText={setText} 
+        />
+
         <Pressable style={styles.sendLogo}
         onPress={handleSendMessage}> 
             {/* TODO: This should be a personalized component */}
-            <Text style={styles.sendLogo}>SEND!</Text>
+            <MaterialCommunityIcons name="send-circle" size={40} color="white" />
         </Pressable>
-        <VoiceRecognitionButton isMicrophoneListening={isMicrophoneListening}
-        setIsMicrophoneListening={setIsMicrophoneListening}
-        />
+        
     </View>
   )
 }
@@ -67,15 +80,32 @@ export const TypingZone = ({text,setMessages,setText,messages,
 const styles = StyleSheet.create({
     container: {
         // flex: 1,
-        backgroundColor: 'blue',
+        flexDirection: 'row',
+        backgroundColor: generalColors.primary,
         alignItems: 'center',
         justifyContent: 'center',
+        width: '100%',
+        gap:3,
+        paddingHorizontal: 2,
     },
-    inputText: {
-        color: 'white',
+    textInputContainer: {
+        flex: 1,
+        flexWrap: 'nowrap',
     },
     sendLogo: {
         color: 'white',
-        fontSize: 32,
+        fontSize: 30,
+    },
+    textInput: {
+        color: 'white',
+        fontSize: 15,
+        fontFamily: 'sans-serif',
+        backgroundColor: 'black',
+        height: 25,
+        paddingRight: 15,
+        paddingHorizontal: 5,
+        paddingLeft: 5,
+        marginHorizontal: 3,
+        borderRadius: 4,
     }
 });

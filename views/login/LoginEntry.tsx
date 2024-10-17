@@ -2,7 +2,7 @@ import { View, Text, TextInput, Pressable, Image, Animated, Easing,
   Platform, StyleSheet, ImageBackground
  } from 'react-native';
 import React, { useState, useRef } from 'react';
-import { colors } from '@/components/generalColors';
+import { generalColors } from '@/components/generalColors';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Asset } from 'expo-asset';
@@ -322,11 +322,11 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 100,
-    backgroundColor: colors.backgroundGeneral,
+    backgroundColor: generalColors.backgroundGeneral,
     zIndex: 0, // Ensure circle is behind button
   },
   input: {
-    backgroundColor: colors.inputBackground,
+    backgroundColor: generalColors.inputBackground,
     height: 40,
     marginBottom: 15,
     fontSize: 14,

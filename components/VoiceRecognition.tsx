@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import Voice from '@react-native-voice/voice';
 import { Pressable } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useUserProfileStore, SpeechRecordingStatus } from '@/store/userProfile';
 
 
 // TODO: Movew this enum to types folder
@@ -19,20 +20,19 @@ export enum Languages {
 }
 
 interface Props {
-    isMicrophoneListening: boolean;
-    setIsMicrophoneListening: (isListening: boolean) => void;
+    setText: (text: string) => void;
 }
 
-export const VoiceRecognitionButton = ({isMicrophoneListening, setIsMicrophoneListening}:Props) => {
-
-
-    const [text, setText] = useState('');
-
+export const VoiceRecognitionButton = ({setText}:Props) => {
+    
+    
+    const updateSpeechRecordingStatus = useUserProfileStore( state => state.updateSpeechRecordingStatus);
+    const speechRecordingStatus = useUserProfileStore( state => state.speechRecordingStatus);
 
     const startListening = async () => {
         try {
-            await Voice.start(Languages.ENGLISH);
-            setIsMicrophoneListening(true);
+            await Voice.start(Languages.SPANISH);
+            updateSpeechRecordingStatus(SpeechRecordingStatus.Recording);
         } catch (e) {
             console.error('Error starting voice recognition', e);
         }
@@ -41,7 +41,7 @@ export const VoiceRecognitionButton = ({isMicrophoneListening, setIsMicrophoneLi
     const stopListening = async () => {
         try {
             await Voice.stop();
-            setIsMicrophoneListening(false);
+            updateSpeechRecordingStatus(SpeechRecordingStatus.Inactive);
         } catch (e) {
             console.error('Error stopping voice recognition', e);
             await Voice.destroy(); //Then, kill the voice recognition
@@ -49,17 +49,17 @@ export const VoiceRecognitionButton = ({isMicrophoneListening, setIsMicrophoneLi
     }
 
     Voice.onSpeechResults = (e) => {
-        setText(e.value[0]); // This is the recognized text converted to a string
         console.log('Voice recognition results', e.value[0]);
+        setText(() => e.value[0]); //This should be an spread operator to update the text and not remove the current.
       };
 
     return (
         <Pressable
         onLongPress={startListening} onPressOut={stopListening}>
 
-        {isMicrophoneListening
-        ? <FontAwesome name="microphone" size={24} color="black" />
-        :<FontAwesome name="microphone-slash" size={24} color="black" />
+        {speechRecordingStatus === SpeechRecordingStatus.Recording
+        ? <FontAwesome name="microphone" size={30} color="white" />
+        :<FontAwesome name="microphone-slash" size={30} color="white" />
         }
 
         </Pressable>

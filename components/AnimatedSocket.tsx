@@ -120,15 +120,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'green', // Darker background for contrast
         position: 'absolute',
-        top: '80%',
-        left: '47.5%',
+        top: '60%',
+        right: '7.5%',
+        transform:[{scale: 1.5}],
+        alignSelf: 'center',
     },
     hexBrick: {
         width: 7,
         height: 7,
-        borderRadius: 3,
+        borderRadius: 5,
     },
 });

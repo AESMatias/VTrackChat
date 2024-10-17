@@ -1,7 +1,7 @@
 import BackgroundGradient from "@/components/BackgroundGradient";
 import { LinearGradient } from 'expo-linear-gradient';
 
-export const colors = {
+export const generalColors = {
     // inputBackground: 'rgb(230, 238, 245)',
     primary: '#1e50bb',
     background: '#032843',
