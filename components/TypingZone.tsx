@@ -6,7 +6,8 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { SpeechRecordingStatus, useUserProfileStore } from '@/store/userProfile';
 import { RecordingSpeechAnimation } from '@/components/RecordingSpeechAnimation';
 import { generalColors } from '@/components/generalColors';
-
+import { BackgroundGradientTyping } from '@/components/BackgroundGradient';
+import { DeleteButton } from '@/components/DeleteButton';
 
 interface TypingZoneProps {
     // Props definition
@@ -31,8 +32,6 @@ interface TypingZoneProps {
 
 export const TypingZone = ({text,setMessages,setText,messages, isMicrophoneListening, setIsMicrophoneListening}:TypingZoneProps) => {
 
-    const [voiceToText, setVoiceToText] = useState('')
-
     const speechRecordingStatus = useUserProfileStore(state => state.speechRecordingStatus)
 
     const handleSendMessage = async () => {
@@ -51,61 +50,76 @@ export const TypingZone = ({text,setMessages,setText,messages, isMicrophoneListe
     }
 
   return (
-    <View style={styles.container}>
-        <View style={styles.textInputContainer}>
+    <BackgroundGradientTyping text={text}>
+        <View style={styles.container}>
+                
+            <View style={styles.textInputContainer}>
 
-            {speechRecordingStatus === SpeechRecordingStatus.Recording 
-            ? <RecordingSpeechAnimation></RecordingSpeechAnimation>
-            : <TextInput style={styles.textInput} placeholder='What do you want to say?'
-            onChangeText={handleInputChange}>
-                <Text>{text}</Text>
-            </TextInput>
-            }
+                {speechRecordingStatus === SpeechRecordingStatus.Recording 
+                ? <RecordingSpeechAnimation></RecordingSpeechAnimation>
+                : <TextInput style={styles.textInput} 
+                placeholder='What do you want to say?'
+                placeholderTextColor="white"
+                aria-label='Write a prompt query'
+                onChangeText={handleInputChange}>
+                    <Text>{text}</Text>
+                </TextInput>
+                }
 
+            </View>
+
+            <DeleteButton text={text} setText={setText}/>
+            
+            {(text==='')
+            ? (<View>
+                <VoiceRecognitionButton setText={setText}/>
+            </View>)
+            : null}
+            
+            <Pressable style={styles.sendButton} onPress={handleSendMessage}> 
+                {/* TODO: This should be a personalized component */}
+                <MaterialCommunityIcons 
+                name="send-circle" size={40} color="white" />
+            </Pressable>
+            
         </View>
+    </BackgroundGradientTyping>
 
-        <VoiceRecognitionButton setText={setText} 
-        />
-
-        <Pressable style={styles.sendLogo}
-        onPress={handleSendMessage}> 
-            {/* TODO: This should be a personalized component */}
-            <MaterialCommunityIcons name="send-circle" size={40} color="white" />
-        </Pressable>
-        
-    </View>
   )
 }
 
 const styles = StyleSheet.create({
+    sendButton: {
+        // backgroundColor:'red',
+        paddingHorizontal: 10,
+        right: -20,
+    },
     container: {
-        // flex: 1,
         flexDirection: 'row',
-        backgroundColor: generalColors.primary,
+        // backgroundColor: generalColors.typingZoneInput,
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
-        gap:3,
-        paddingHorizontal: 2,
+        paddingHorizontal: 1,
+        height:50,
     },
     textInputContainer: {
         flex: 1,
         flexWrap: 'nowrap',
     },
-    sendLogo: {
-        color: 'white',
-        fontSize: 30,
-    },
     textInput: {
-        color: 'white',
+        color:'white',
+        textDecorationLine: "none",
         fontSize: 15,
         fontFamily: 'sans-serif',
-        backgroundColor: 'black',
-        height: 25,
-        paddingRight: 15,
+        backgroundColor: 'rgba(0,0,0,.7)',
+        height: 45,
+        paddingRight: 30,
         paddingHorizontal: 5,
-        paddingLeft: 5,
-        marginHorizontal: 3,
-        borderRadius: 4,
+        paddingLeft: 10,
+        // marginHorizontal: 3,
+        borderRadius: 10,
+        borderTopLeftRadius:5,
+        borderTopRightRadius: 5,
     }
 });

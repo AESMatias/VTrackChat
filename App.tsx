@@ -5,12 +5,14 @@ import LoginEntry from "@/views/login/LoginEntry";
 import { SideDrawer } from '@/views/routes/SideDrawer';
 import { NavigationContainer } from '@react-navigation/native';
 
+
+
 export default function App() {
   return (
     <NavigationContainer>
     <SideDrawer />
       {/* <LoginEntry /> */}
-      <StatusBar style="dark" />
+      <StatusBar style='dark'/>
     </NavigationContainer>
   );
 }

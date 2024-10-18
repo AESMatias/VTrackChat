@@ -1,9 +1,8 @@
 import React, {useState} from 'react'
 import Voice from '@react-native-voice/voice';
-import { Pressable } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useUserProfileStore, SpeechRecordingStatus } from '@/store/userProfile';
-
 
 // TODO: Movew this enum to types folder
 export enum VoiceStatus {
@@ -47,14 +46,19 @@ export const VoiceRecognitionButton = ({setText}:Props) => {
             await Voice.destroy(); //Then, kill the voice recognition
         }
     }
-
+    
     Voice.onSpeechResults = (e) => {
-        console.log('Voice recognition results', e.value[0]);
-        setText(() => e.value[0]); //This should be an spread operator to update the text and not remove the current.
-      };
+        try {
+            const lastMessage = e?.value[0]
+            console.log('Voice recognition results:', lastMessage);
+            setText((prevMessage) => prevMessage + ' ' + lastMessage);
+        } catch {
+            console.error('Error at voice recognition results');
+        }
+    };
 
     return (
-        <Pressable
+        <Pressable style={style.pressable}
         onLongPress={startListening} onPressOut={stopListening}>
 
         {speechRecordingStatus === SpeechRecordingStatus.Recording
@@ -65,4 +69,13 @@ export const VoiceRecognitionButton = ({setText}:Props) => {
         </Pressable>
     )
 
-}
+};
+
+const style = StyleSheet.create({
+    pressable: {
+        // backgroundColor:'green',
+        paddingVertical: 10,
+        paddingHorizontal:15,
+        right: -10,
+    },
+}) 

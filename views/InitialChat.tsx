@@ -9,6 +9,7 @@ import { QueryInterface } from '@/components/services/SQLite/types'
 import { getEmbedding } from '@/components/services/openAIQueries'
 import { useUserProfileStore } from '@/store/userProfile'
 import { BlurView } from 'expo-blur'
+import { generalColors } from '@/components/generalColors'
 
 export const InitialChat = () => {
 
@@ -16,7 +17,7 @@ export const InitialChat = () => {
     const [refreshing, setRefreshing] = useState(false)
     const [isMicrophoneListening, setIsMicrophoneListening] = useState(false)
 
-    const [text, setText] = useState('Hello, can you tell me something interesting? Be quick! Not much text')
+    const [text, setText] = useState('')
     const [messages, setMessages] = useState([])
     const [currentImage, setCurrentImage] = useState('');
     const flatListRef = useRef(null);
@@ -112,6 +113,7 @@ export const InitialChat = () => {
 
     <BlurView intensity={20} style={styles.overlay} >
     </BlurView>
+    
 
     {/* {dataFetched && dataFetched.length < 4 ? (<AnimatedSocket key="animatedSocket"/>) : null} */}
 
@@ -150,7 +152,6 @@ export const InitialChat = () => {
     />
 
 
-
 </SafeAreaView>
   )
 }
@@ -158,7 +159,7 @@ export const InitialChat = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // backgroundColor: 'orange',
+        backgroundColor: generalColors.chatBackground,
         alignItems: 'center',
         justifyContent: 'center',
     },

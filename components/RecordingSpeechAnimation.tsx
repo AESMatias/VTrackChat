@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     text: {
         color: 'white',
         fontSize: 20,
+        fontWeight: 'bold',
         fontFamily: 'sans-serif',
         justifyContent: 'center',
         margin: 'auto'

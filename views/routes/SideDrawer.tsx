@@ -5,7 +5,6 @@ import { createDrawerNavigator, DrawerContentComponentProps,
  } from '@react-navigation/drawer';
 import { View, StyleSheet } from 'react-native';
 
-
 export type RootStackParams = {
   LoginEntry: undefined;
   InitialChat: undefined;
@@ -56,6 +55,7 @@ export const SideDrawer = () => {
             fontSize: 15,
             fontWeight: 'bold',
             },
+            
     }}
 
     drawerContent={props => {
@@ -70,11 +70,9 @@ export const SideDrawer = () => {
         }}
            />
 
-
         <Drawer.Screen name="InitialChat" component={InitialChat}
         options={{ headerShown: true }}
         />
-
 
     </Drawer.Navigator>
   );

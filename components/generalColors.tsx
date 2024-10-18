@@ -1,9 +1,10 @@
-import BackgroundGradient from "@/components/BackgroundGradient";
-import { LinearGradient } from 'expo-linear-gradient';
+
 
 export const generalColors = {
     // inputBackground: 'rgb(230, 238, 245)',
     primary: '#1e50bb',
+    typingZoneInput: 'rgba(5,20,60,.9)',
+    chatBackground: 'rgba(0,0,0,1)',
     background: '#032843',
     backgroundDense: 'rgb(2, 15, 25)',
     // inputBackground: 'rgba(30, 140, 250,0.15)',
@@ -15,6 +16,5 @@ export const generalColors = {
     mediumGray: '#F6F6FB',
     lightGray: 'hsl(200, 60%, 90%)',
     lightGrayInput: 'hsl(190, 15%, 80%)',
-    BackgroundGradient: () => <BackgroundGradient />,
     ticketBackground: 'hsla(200, 65%, 90%, 1)',
 };

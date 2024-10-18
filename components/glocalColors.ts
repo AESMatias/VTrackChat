@@ -1,4 +1,4 @@
-import { BackgroundGradient}  from "@/components/BackgroundGradient";
+
 
 export const colors = {
     inputBackground: 'rgb(230, 238, 245)',
@@ -10,5 +10,4 @@ export const colors = {
     gray: '#C5C4C6',
     mediumGray: '#F6F6FB',
     lightGray: '#FAFAFA',
-    BackgroundGradient: () => <BackgroundGradient/>,
 };

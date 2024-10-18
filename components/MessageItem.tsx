@@ -6,7 +6,6 @@ import { Clipboard } from 'react-native';
 
 export const MessageItem = ({message}) => {
 
-
     const handlePress = () => {
         Clipboard.setString(message);
         // if (!muted) {
@@ -18,22 +17,14 @@ export const MessageItem = ({message}) => {
         // // We fill the modal with the character data
     }
 
-    // const [imageError, setImageError] = useState(false);
-
-    // const handleImageError = () => {
-    //     setImageError(true);
-    //     console.log(' Error at loading the image', charData.images[0], imageError);
-    // }
-
     return (
         <TouchableOpacity onPress={() => handlePress()}>
             <View style={styles.general_container}>
+
                 <View style={styles.container}>
                     <Text style={styles.text}>
                     {message}
                     </Text>
-                    <AntDesign name="questioncircle" size={30}
-                            color="white" style={styles.imageNotFound} />
                 </View>
 
             </View>
