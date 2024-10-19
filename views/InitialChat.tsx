@@ -17,8 +17,8 @@ export const InitialChat = () => {
     const [refreshing, setRefreshing] = useState(false)
     const [isMicrophoneListening, setIsMicrophoneListening] = useState(false)
 
-    const [text, setText] = useState('')
-    const [messages, setMessages] = useState([])
+    const [text, setText] = useState<string>('')
+    const [messages, setMessages] = useState<string[]>([''])
     const [currentImage, setCurrentImage] = useState('');
     const flatListRef = useRef(null);
 
@@ -122,7 +122,7 @@ export const InitialChat = () => {
         <AnimatedSocket key="animatedSocket"/>
         </View>
     )
-    :             (<FlatList
+    :   (<FlatList
             ref={flatListRef} // To scroll to the end of the list every time a new message is sent or received
             data={(dataFetched !== null) ? dataFetched : []
             }

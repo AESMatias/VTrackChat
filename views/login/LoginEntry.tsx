@@ -147,18 +147,13 @@ const LoginEntry = () => {
               value={username}
               onChangeText={setUsername}
               style={styles.input}
+              multiline={true}
               />
           </Animated.View>
 
 
           <Animated.View
-            style={[
-              ,
-              {
-                opacity: opacityLoginText,
-              },
-            ]}
-          >
+            style={{opacity: opacityLoginText}}>
             <TextInput
               placeholder="Your password"
               value={password}

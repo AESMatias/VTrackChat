@@ -3,15 +3,17 @@ import Voice from '@react-native-voice/voice';
 import { Pressable, StyleSheet } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useUserProfileStore, SpeechRecordingStatus } from '@/store/userProfile';
+import { Vibration } from 'react-native';
+
 
 // TODO: Movew this enum to types folder
-export enum VoiceStatus {
-    STARTED = 'STARTED',
-    STOPPED = 'STOPPED',
-    RECOGNIZED = 'RECOGNIZED',
-    ERROR = 'ERROR',
-    END = 'END',
-}
+// export enum VoiceStatus {
+//     STARTED = 'STARTED',
+//     STOPPED = 'STOPPED',
+//     RECOGNIZED = 'RECOGNIZED',
+//     ERROR = 'ERROR',
+//     END = 'END',
+// }
 
 export enum Languages {
     ENGLISH = 'en-US',
@@ -27,6 +29,10 @@ export const VoiceRecognitionButton = ({setText}:Props) => {
     
     const updateSpeechRecordingStatus = useUserProfileStore( state => state.updateSpeechRecordingStatus);
     const speechRecordingStatus = useUserProfileStore( state => state.speechRecordingStatus);
+
+    const handleVibrate = () => {
+        Vibration.vibrate(50);
+    }
 
     const startListening = async () => {
         try {
@@ -48,6 +54,9 @@ export const VoiceRecognitionButton = ({setText}:Props) => {
     }
     
     Voice.onSpeechResults = (e) => {
+
+        if (e?.value === undefined) return;
+
         try {
             const lastMessage = e?.value[0]
             console.log('Voice recognition results:', lastMessage);
@@ -59,11 +68,13 @@ export const VoiceRecognitionButton = ({setText}:Props) => {
 
     return (
         <Pressable style={style.pressable}
-        onLongPress={startListening} onPressOut={stopListening}>
+        onPressIn={handleVibrate}
+        onLongPress={startListening} 
+        onPressOut={stopListening}>
 
         {speechRecordingStatus === SpeechRecordingStatus.Recording
-        ? <FontAwesome name="microphone" size={30} color="white" />
-        :<FontAwesome name="microphone-slash" size={30} color="white" />
+        ? <FontAwesome name="microphone" size={25} color="white" />
+        :<FontAwesome name="microphone-slash" size={25} color="white" />
         }
 
         </Pressable>
@@ -73,8 +84,7 @@ export const VoiceRecognitionButton = ({setText}:Props) => {
 
 const style = StyleSheet.create({
     pressable: {
-        // backgroundColor:'green',
-        paddingVertical: 10,
+        paddingVertical: 5,
         paddingHorizontal:15,
         right: -10,
     },

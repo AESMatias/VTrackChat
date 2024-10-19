@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Pressable, StyleSheet, Text, TextInput, View, Keyboard } from 'react-native'
 import { queryOpenAI, queryOpenAIForImage } from '@/components/services/openAIQueries';
 import { VoiceRecognitionButton } from '@/components/VoiceRecognition'
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -9,17 +9,6 @@ import { generalColors } from '@/components/generalColors';
 import { BackgroundGradientTyping } from '@/components/BackgroundGradient';
 import { DeleteButton } from '@/components/DeleteButton';
 
-interface TypingZoneProps {
-    // Props definition
-}
-
-enum streamStatusValues {
-    WRITING = "writing",
-    SENDED = "sended",
-    STREAMING = "STREAMING",
-    FINISHED = "finished", // This means that the stream of data has not started yet
-    ERROR = "error",
-}
 
 interface TypingZoneProps {
     text: string;
@@ -30,16 +19,39 @@ interface TypingZoneProps {
     setIsMicrophoneListening: (isListening: boolean) => void;
 }
 
+
 export const TypingZone = ({text,setMessages,setText,messages, isMicrophoneListening, setIsMicrophoneListening}:TypingZoneProps) => {
 
-    const speechRecordingStatus = useUserProfileStore(state => state.speechRecordingStatus)
+    const [isFocused, setIsFocused] = useState(false);
+
+
+    const speechRecordingStatus = useUserProfileStore(state => state.speechRecordingStatus);
+
+    useEffect(() => {
+        // Listener for keyboard hide event
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+            setIsFocused(true);
+
+        });
+
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+            setIsFocused(false);
+        });
+
+        // Cleanup the listener on component unmount!
+        return () => {
+            keyboardDidHideListener.remove();
+        };
+    }, []);
 
     const handleSendMessage = async () => {
         setMessages([...messages, text])
         try{
-            setText('')
-            const queryResponse = await queryOpenAI(text, messages)
-            setMessages([...messages, queryResponse])
+            setIsFocused(true);
+            Keyboard.dismiss();
+            setText('');
+            const queryResponse = await queryOpenAI(text, messages);
+            setMessages([...messages, queryResponse]);
         }catch(e){
             console.log('Error at sending the message:', e)
         }
@@ -51,16 +63,23 @@ export const TypingZone = ({text,setMessages,setText,messages, isMicrophoneListe
 
   return (
     <BackgroundGradientTyping text={text}>
-        <View style={styles.container}>
+        <View style={[styles.container,{
+            height: isFocused ? 40 : 50
+        }]}>
                 
             <View style={styles.textInputContainer}>
 
                 {speechRecordingStatus === SpeechRecordingStatus.Recording 
                 ? <RecordingSpeechAnimation></RecordingSpeechAnimation>
-                : <TextInput style={styles.textInput} 
+                : <TextInput 
+                style={[styles.textInput, 
+                    { height: isFocused ? 30 : 50 }
+                ]} 
+                multiline={true}
                 placeholder='What do you want to say?'
                 placeholderTextColor="white"
                 aria-label='Write a prompt query'
+                // verticalAlign='middle'
                 onChangeText={handleInputChange}>
                     <Text>{text}</Text>
                 </TextInput>
@@ -79,7 +98,7 @@ export const TypingZone = ({text,setMessages,setText,messages, isMicrophoneListe
             <Pressable style={styles.sendButton} onPress={handleSendMessage}> 
                 {/* TODO: This should be a personalized component */}
                 <MaterialCommunityIcons 
-                name="send-circle" size={40} color="white" />
+                name="send-circle" size={30} color="white" />
             </Pressable>
             
         </View>
@@ -90,18 +109,16 @@ export const TypingZone = ({text,setMessages,setText,messages, isMicrophoneListe
 
 const styles = StyleSheet.create({
     sendButton: {
-        // backgroundColor:'red',
         paddingHorizontal: 10,
         right: -20,
     },
     container: {
         flexDirection: 'row',
-        // backgroundColor: generalColors.typingZoneInput,
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
         paddingHorizontal: 1,
-        height:50,
+        height: 50,
     },
     textInputContainer: {
         flex: 1,
@@ -113,13 +130,15 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontFamily: 'sans-serif',
         backgroundColor: 'rgba(0,0,0,.7)',
-        height: 45,
-        paddingRight: 30,
+        height: 30,
+        paddingRight: 50,
         paddingHorizontal: 5,
         paddingLeft: 10,
         // marginHorizontal: 3,
         borderRadius: 10,
-        borderTopLeftRadius:5,
-        borderTopRightRadius: 5,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        borderTopLeftRadius: 5,
+        borderBottomLeftRadius: 5,
     }
 });
