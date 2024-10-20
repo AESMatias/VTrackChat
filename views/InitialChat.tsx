@@ -13,37 +13,39 @@ import { generalColors } from '@/components/generalColors'
 
 export const InitialChat = () => {
 
-    const [dataFetched, setDataFetched] = useState<{ id: number; text: string; }[]>([]);
-    const [refreshing, setRefreshing] = useState(false)
-    const [isMicrophoneListening, setIsMicrophoneListening] = useState(false)
+    const [dataFetched, setDataFetched] = useState<QueryInterface[]>([]);
+    const [refreshing, setRefreshing] = useState(false);
+    const [isMicrophoneListening, setIsMicrophoneListening] = useState(false);
 
-    const [text, setText] = useState<string>('')
-    const [messages, setMessages] = useState<string[]>([''])
+    const [text, setText] = useState<string>('');
+    const [messages, setMessages] = useState<string[]>(['']);
     const [currentImage, setCurrentImage] = useState('');
     const flatListRef = useRef(null);
 
-    const username = useUserProfileStore(state => state.username)
-    const currentPlan = useUserProfileStore(state => state.currentPlan)
-    const tokens = useUserProfileStore(state => state.tokens)
-    const loggedIn = useUserProfileStore(state => state.loggedIn)
-    const speechRecordingStatus = useUserProfileStore(state => state.speechRecordingStatus)
+    const username = useUserProfileStore(state => state.username);
+    const currentPlan = useUserProfileStore(state => state.currentPlan);
+    const tokens = useUserProfileStore(state => state.tokens);
+    const loggedIn = useUserProfileStore(state => state.loggedIn);
+    const speechRecordingStatus = useUserProfileStore(state => state.speechRecordingStatus);
 
-    const handlePress = () => {
-        console.log('Pressed')
-    }
+
+    const senderImageUrl =  'https://avatars.githubusercontent.com/u/119653204?v=4';
+    const senderUsername = 'SENDERADSAJ';
 
     const datatoPUT = [
         {
             id: 1,
-            text: 'Hello',
+            username: 'senderUSERNAMEEEE',
+            senderAccountType: 0,
+            message: 'Hello',
+            senderImageUrl: 'https://avatars.githubusercontent.com/u/119653204?v=4'
         },
         {
             id: 2,
-            text: 'Hi',
-        },
-        {
-            id: 3,
-            text: 'Bye',
+            username: 'senderUSERNAMEEEE',
+            senderAccountType: 0,
+            message: 'Hi',
+            senderImageUrl: 'https://avatars.githubusercontent.com/u/119653204?v=4'
         },
     ]
 
@@ -67,11 +69,12 @@ export const InitialChat = () => {
             queryText: query,
             date: new Date(),
             category: 'general',
-            username: 'user',
             summary: 'summary',
             context: 'context',
             embeddings: [],
             tags: ['tag1', 'tag2', 'tag3'],
+            senderImageUrl: 'https://avatars.githubusercontent.com/u/119653204?v=4',
+            username:'senderUSERNAme'
         }
 
         try {
@@ -79,7 +82,7 @@ export const InitialChat = () => {
             queryObject.embeddings = embeddingResponse;
 
             // Insert the query into the SQLite database
-            insertQuery(queryObject);
+            await insertQuery(queryObject);
 
         } catch (error) {
             console.error('Error processing query in initial chat tsx:', error)
@@ -98,7 +101,11 @@ export const InitialChat = () => {
         processQuery(dataFetched[dataFetched.length-1]?.text)
 
         //actualizamos datafetch
-        setDataFetched([...dataFetched, {id: dataFetched.length+1, text: messages[messages.length-1]}])
+        setDataFetched([...dataFetched, {id: dataFetched.length+1,
+            message: messages[messages.length-1],
+             senderImageUrl,
+             senderUsername,
+            }])
 
         setTimeout(() => { // To scroll to the end of the list every time a new message is sent or received
                 flatListRef?.current?.scrollToEnd({ animated: true });
@@ -122,18 +129,16 @@ export const InitialChat = () => {
         <AnimatedSocket key="animatedSocket"/>
         </View>
     )
-    :   (<FlatList
+    :   (<View style={styles.flatlistContainer}>
+        <FlatList
             ref={flatListRef} // To scroll to the end of the list every time a new message is sent or received
-            data={(dataFetched !== null) ? dataFetched : []
-            }
+            data={ (dataFetched !== null) ? dataFetched : [] }
             keyExtractor={(item) => item?.id?.toString()}
             renderItem={
-                ({ item }) => 
-                    <MessageItem message={item.text} 
-                onPress={() => handlePress()}
-                charData={item}/>
-        }
+                ({ item }) => <MessageItem itemData={item}/>
+            }
             style={styles.char_list}
+            indicatorStyle='white' // Only works on iOS!
             refreshing={refreshing}
             onRefresh={(refreshing) => setRefreshing(!refreshing)}
             showsVerticalScrollIndicator={true}
@@ -141,14 +146,16 @@ export const InitialChat = () => {
             initialNumToRender={20} // Render 100 elements when the component is mounted
             windowSize={20} // Hold 20 elements in memory
             removeClippedSubviews={true} // Not render elements that are not in the screen
-            
-        />)
+        />
+        </View>)
     }
 
-    <TypingZone text={text} setText={setText} messages={messages} 
+    <TypingZone text={text} 
+    setText={setText} 
+    messages={messages} 
     setMessages={setMessages}
-    isMicrophoneListening = {isMicrophoneListening}
-    setIsMicrophoneListening = {setIsMicrophoneListening}
+    isMicrophoneListening={isMicrophoneListening}
+    setIsMicrophoneListening={setIsMicrophoneListening}
     />
 
 
@@ -169,10 +176,15 @@ const styles = StyleSheet.create({
     },
     char_list: {
         width: '100%',
-        height: '100%',
+        maxHeight:'95%',
+        // flex:2,
+        minWidth: '97%',
     },
     overlay: {
         ...StyleSheet.absoluteFillObject,
         backgroundColor: 'rgba(5,5,10,0.5)',
     },
+    flatlistContainer:{
+        flex:1,
+    }
 })

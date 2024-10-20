@@ -1,20 +1,76 @@
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
-import { useState } from 'react'
+import { Image, Pressable, StyleSheet, Text, View , Animated} from 'react-native'
+import { useEffect, useRef, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { Clipboard, Vibration } from 'react-native';
 
 interface MessageItemProps {
     message: string,
+    senderUsername:string,
+    senderImageUrl: string,
 }
 
+// message={item.text} 
+// senderUsername={item.senderUsername} 
+// senderImageUrl={item.senderImageUrl}
 
-export const MessageItem = ({message}: MessageItemProps) => {
+export const MessageItem = ({itemData}: MessageItemProps) => {
+    
+    console.log('DATA', itemData)
 
-    const LOGOLINK = 'https://avatars.githubusercontent.com/u/119653204?v=4' //TODO: CHANGE
+    const { message='juuu',
+        username = 'Username',
+         senderImageUrl = '' } = itemData || {}; //TODO: Change the default values
+
+    
+    const backgroundColorAnim = useRef(new Animated.Value(0)).current;
+    const scaleAnim = useRef(new Animated.Value(1)).current;
+
+    useEffect(() => {
+        Animated.timing(backgroundColorAnim, { 
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: false,
+        }).start();
+
+    // Revert to original values after a delay
+    const timeout = setTimeout(() => {
+        Animated.timing(backgroundColorAnim, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: false,
+        }).start();
+    }, 200);
+
+    // return () => clearTimeout(timeout);
+
+    }, []);
+
+    const interpolatedBackgroundColor = backgroundColorAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['rgba(10,10,10,0.6)', 'rgba(250,250,250,.2)']  
+    });
+
+    const animatePressedItem = () => {
+            Animated.timing(scaleAnim, { 
+            toValue: .95,
+            duration: 50,
+            useNativeDriver: false,
+            }).start();
+
+        // Revert to original values after a delay
+        const timeout = setTimeout(() => {
+            Animated.timing(scaleAnim, {
+                toValue: 1,
+                duration: 150,
+                useNativeDriver: false,
+            }).start();
+        }, 200);
+    }
 
     const handlePress = () => {
-        Clipboard.setString(message); // TODO: Change this, it is obsolete!
         Vibration.vibrate(50);
+        animatePressedItem()
+        Clipboard.setString(message); // TODO: Change this, it is obsolete!
 
         // if (!muted) {
         //     playSound();
@@ -28,21 +84,24 @@ export const MessageItem = ({message}: MessageItemProps) => {
     return (
         <Pressable onLongPress={handlePress}>
 
-            <View style={styles.general_container}>
+            <Animated.View style={[styles.general_container,{
+                backgroundColor: interpolatedBackgroundColor,
+                transform: [{ scale: scaleAnim }]
+            }]}>
 
                 <View style={styles.imageContainer}>
-                    <Image source={{ uri: LOGOLINK }} 
+                    <Image source={{ uri: senderImageUrl }} 
                     style={styles.image} >
                     </Image>
                 </View>
 
                 <View style={styles.textContainer}>
                     <Text style={styles.text}>
-                    {message}
+                    {`${username}: ${message}`}
                     </Text>
                 </View>
 
-            </View>
+            </Animated.View>
 
         </Pressable>
     )
@@ -57,8 +116,6 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'rgba(10,10,10,0.6)',
-        // backgroundColor: 'red',
         borderRadius: 10,
         width: '97.5%',
         alignSelf: 'center',
@@ -82,10 +139,6 @@ const styles = StyleSheet.create({
     text: {
         color: 'white',
         fontSize: 16,
-        // fontWeight: 'bold',
-        // padding: 2,
-        // marginTop: 3,
-        // textShadowColor: 'black',
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 5,
         textAlign: 'center',
@@ -97,6 +150,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'hsla(100%,100%,100%,.9)',
         alignSelf: 'center',
+        resizeMode: 'contain',
+        aspectRatio: 1/1, //eTo reserve the space of the image.
     },
     imageNotFound: {
         width: 70,

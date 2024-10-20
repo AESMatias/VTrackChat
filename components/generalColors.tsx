@@ -17,4 +17,6 @@ export const generalColors = {
     lightGray: 'hsl(200, 60%, 90%)',
     lightGrayInput: 'hsl(190, 15%, 80%)',
     ticketBackground: 'hsla(200, 65%, 90%, 1)',
+    addFileButton: 'hsla(360, 100%, 100%, .7)',
+    overlayLogin: 'rgba(5,5,10,0.85)',
 };

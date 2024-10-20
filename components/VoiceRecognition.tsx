@@ -1,9 +1,12 @@
 import React, {useState} from 'react'
 import Voice from '@react-native-voice/voice';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, Animated, Dimensions } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { withTiming, useSharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import { useUserProfileStore, SpeechRecordingStatus } from '@/store/userProfile';
 import { Vibration } from 'react-native';
+import { Directions, Gesture, GestureDetector,
+    GestureHandlerRootView,} from 'react-native-gesture-handler';
 
 
 // TODO: Movew this enum to types folder
@@ -26,15 +29,19 @@ interface Props {
 
 export const VoiceRecognitionButton = ({setText}:Props) => {
     
-    
+    const [isRecordingTapped, setIsRecordingTapped] = useState(false);
+
     const updateSpeechRecordingStatus = useUserProfileStore( state => state.updateSpeechRecordingStatus);
     const speechRecordingStatus = useUserProfileStore( state => state.speechRecordingStatus);
+
+    const { width } = Dimensions.get('screen');
 
     const handleVibrate = () => {
         Vibration.vibrate(50);
     }
 
     const startListening = async () => {
+        Vibration.vibrate(50);
         try {
             await Voice.start(Languages.SPANISH);
             updateSpeechRecordingStatus(SpeechRecordingStatus.Recording);
@@ -52,32 +59,25 @@ export const VoiceRecognitionButton = ({setText}:Props) => {
             await Voice.destroy(); //Then, kill the voice recognition
         }
     }
-    
-    Voice.onSpeechResults = (e) => {
 
-        if (e?.value === undefined) return;
 
-        try {
-            const lastMessage = e?.value[0]
-            console.log('Voice recognition results:', lastMessage);
-            setText((prevMessage) => prevMessage + ' ' + lastMessage);
-        } catch {
-            console.error('Error at voice recognition results');
-        }
-    };
 
     return (
-        <Pressable style={style.pressable}
-        onPressIn={handleVibrate}
-        onLongPress={startListening} 
-        onPressOut={stopListening}>
+    
+                <Animated.View>
 
-        {speechRecordingStatus === SpeechRecordingStatus.Recording
-        ? <FontAwesome name="microphone" size={25} color="white" />
-        :<FontAwesome name="microphone-slash" size={25} color="white" />
-        }
+                    <Pressable style={style.pressable}
+                    // onPressIn={handleVibrate}
+                    onLongPress={startListening} 
+                    onPressOut={stopListening}>
 
-        </Pressable>
+                    {speechRecordingStatus === SpeechRecordingStatus.Recording
+                    ? <FontAwesome name="microphone-slash" size={25} color="white" />
+                    :<FontAwesome name="microphone" size={25} color="white" />
+                    }
+                    </Pressable>
+
+                </Animated.View>
     )
 
 };

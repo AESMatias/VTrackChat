@@ -125,7 +125,7 @@ export const insertQuery = async (QueryObject: QueryInterface) => {
       [queryText, dateTimeString, queryCategory, queryEmbedding]);
     
   // console.log(result.lastInsertRowId, result.changes);
-  // console.log('ESTOY METIENDO UNA QUERY:', queryEmbedding)
+  console.log('ESTOY METIENDO UNA QUERY:', queryEmbedding)
 
     // `getAllAsync()` is useful when you want to get all results as an array of objects.
     // const allRows = await db.getAllAsync('SELECT * FROM queries');

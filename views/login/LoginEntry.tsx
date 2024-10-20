@@ -1,5 +1,5 @@
 import { View, Text, TextInput, Pressable, Image, Animated, Easing,
-  Platform, StyleSheet, ImageBackground
+  Platform, StyleSheet, ImageBackground, Keyboard
  } from 'react-native';
 import React, { useState, useRef } from 'react';
 import { generalColors } from '@/components/generalColors';
@@ -20,6 +20,8 @@ const LoginEntry = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isLogged, setIsLogged] = useState(false)
+  const [isFormRegister, setIsFormRegister] = useState(false);
 
   const scaleValue = useRef(new Animated.Value(1)).current;
   const scaleValueUsername = useRef(new Animated.Value(1)).current;
@@ -35,17 +37,31 @@ const LoginEntry = () => {
 
   const topValueLogoAnimation = Animated.timing(topValueLogo, {
     toValue: Platform.OS === 'web' ? -80 : -25,
-    duration: 300,
+    duration: 100,
     useNativeDriver: true,
   });
 
   const updateProfileStatus = useUserProfileStore( state => state.updateProfileStatus);
 
-  const iluminateBorder = () => (username === "" && password === "" ? 'black' : 'cyan');
+  const iluminateBorder = () => {
+    if(isFormRegister){
+      return (username === "" && password === "" ? 'black' : 'hsl(120,90%,80%)')
+    }
+    const returnValue = (username === "" && password === "" ? 'black' : 'cyan')
+    return returnValue
+
+  };
 
   const rotateInterpolate = rotation.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
+  });
+  
+  const rotateXValue = useRef(new Animated.Value(0)).current;
+
+  const rotateXInterpolation = rotateXValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "360deg"],
   });
 
   const LOGOLINK = 'https://avatars.githubusercontent.com/u/119653204?v=4' //TODO: CHANGE
@@ -55,16 +71,29 @@ const LoginEntry = () => {
   const handleLogin = async () => {
 
     const isUserLogged = await handleLoginFunc(username,password);
+    setIsLogged(isUserLogged); // For border animation purposes only
 
     await LoginAndNavigate(scaleValue, scaleValueUsername, 
       colorValue, circleScale, opacityValue, rotation, opacityLogin, opacityLoginText,
       topValueLogo, topValueLogoAnimation, isUserLogged);
 
     if (isUserLogged) {
-      updateProfileStatus( username, SubscriptionPlan.Normal, 1222137, true);
+      setIsFormRegister(false);
+      updateProfileStatus( username, SubscriptionPlan.Normal, 1222137, true);// TODO: Change profile
       navigation.navigate('InitialChat');
+      setIsLogged(false); // Once the user is logged, we change this to false in order to reset the border "animation"
     }
   }
+  
+  console.log(rotateXInterpolation,typeof rotateXInterpolation)
+  const startAnimation = () => {
+    Animated.timing(rotateXValue, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true, // Use native driver for better performance
+    }).start();
+  };
+
 
     return (
       <View style={styles.container}>
@@ -74,41 +103,45 @@ const LoginEntry = () => {
       resizeMode="cover">
 
         {/* The Blur does not work well! */}
-        <BlurView intensity={20} style={styles.overlay} >
+        <BlurView intensity={20} style={[styles.overlay,
+          {backgroundColor: (isFormRegister) ? 'black': generalColors.overlayLogin}
+        ]} >
         </BlurView>
 
         <View style={{
-          // backgroundColor:'red',
           paddingVertical: 'auto',
           paddingHorizontal: '15%',
         }}>
 
           <Animated.View
-            style={{
-              flex: Platform.OS === 'web' ? 0.85 : 0.98,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: 'hsla(190, 50%, 12%,0.6)',
-              zIndex: 1, // Ensure button is on top
-              borderStyle: 'solid',
-              borderWidth: 1,
+            style={[styles.iluminatedView,{
               borderColor: iluminateBorder(),
-              borderRadius: 5,
-              paddingHorizontal: Platform.OS ==='web' ? 100 : 55,
-              marginVertical: Platform.OS ==='web' ? 60 : 120,
-              minHeight: 500,
-              borderBottomLeftRadius: 100,
-              borderTopRightRadius: 100,
-            }}>
+            }]}>
               <LinearGradient
-                  // colors={['hsla(220, 0%, 0%,0)', 'hsla(190, 0%, 0%,0)']}
-                  colors={['hsla(220, 90%, 35%,1)', 'hsla(190, 90%, 40%,1)', 'hsla(200, 10%, 80%,1)']}
-                  style={[
-                    Platform.OS === 'web' ? styles.gradient : styles.gradientMobile,
-                    { borderRadius: 30 },
+                  colors={
+                    (isFormRegister)
+                    // ?['hsla(220, 90%, 35%,1)', 'hsla(190, 90%, 40%,1)', 'hsla(200, 10%, 80%,1)']
+                    ?['hsla(100, 100%, 80%,1)', 'hsla(150, 90%, 30%,1)', 'hsla(160, 50%, 50%,1)', 
+                      'hsla(100, 100%, 90%,1)']
+                    :['hsla(220, 90%, 40%,1)', 'hsla(190, 90%, 50%,1)', 'hsla(200, 10%, 90%,1)']
+                    
+                  }
+                  style={[styles.gradientMobile,{
+                    borderRadius: 30,
+                    // transform: [{rotateX: rotateXInterpolation}],
+                    transform: [{rotateX: '-15deg'}],
+                  },
                   ]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
+                  start={
+                    (isFormRegister)
+                    ? { x: 1, y: 1 }
+                    : { x: 0, y: 0 }
+                }
+                  end={
+                    (isFormRegister)
+                    ? { x: 1, y: 0 }
+                    : { x: 1, y: 1 }
+                  }
                 >
 
 
@@ -124,7 +157,7 @@ const LoginEntry = () => {
             <Animated.Image source={{ uri: LOGOLINK }} 
             style={[styles.imageLogo,{
               transform: [
-                { translateY: topValueLogo },
+                {translateY: topValueLogo},
                 {scale: scaleValue},
               ],
             }]} >
@@ -133,21 +166,26 @@ const LoginEntry = () => {
 
 
 
-
           <Animated.View
             style={[
-              ,
               {
                 transform: [{ scale: scaleValueUsername }],
               },
+              
             ]}
           >
               <TextInput
               placeholder="Your username"
               value={username}
               onChangeText={setUsername}
-              style={styles.input}
+              style={[styles.input,
+                {
+                  borderColor: (isLogged) ? 'hsl(190, 60%, 50%)': 'black',
+                  borderWidth: (isLogged) ? 2 : 0,
+                }
+              ]}
               multiline={true}
+              
               />
           </Animated.View>
 
@@ -177,6 +215,22 @@ const LoginEntry = () => {
             >
 
 
+          {(<LinearGradient
+            colors={['hsl(195, 100%, 60%)', 'hsl(200, 100%, 50%)', 'hsl(220, 100%, 40%)']}
+            style={[styles.gradient, styles.loginButton]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >   
+            <Animated.Text 
+                    style={[
+                      styles.loginButtonText,
+                      {
+                        opacity: opacityLoginText,
+                      },]}>
+                        {isFormRegister ? 'Register': 'Login'}
+            </Animated.Text>
+          </LinearGradient>)}
+
           <LinearGradient
                   colors={['hsl(195, 100%, 60%)', 'hsl(200, 100%, 50%)', 'hsl(220, 100%, 40%)']}
                   style={[styles.gradient, styles.loginButton]}
@@ -190,19 +244,17 @@ const LoginEntry = () => {
                           {
                             opacity: opacityLoginText,
                           },]}>
-                            Login
+                            Google OAuth
                 </Animated.Text>
           </LinearGradient>
 
-                <Animated.View
-            style={[
-              styles.spinner,
+            <Animated.View style={[styles.spinner,
               {
                 transform: [{ rotate: rotateInterpolate }],
                 opacity: opacityLogin,
               },
             ]}
-          />
+            />
               </Pressable>
 
               <Animated.View style={[styles.circle,
@@ -215,7 +267,9 @@ const LoginEntry = () => {
 
               <Pressable onPress={ () => 
               {
-                animateAndNavigate(scaleValue, colorValue, circleScale, opacityValue, navigation)}
+                animateAndNavigate(scaleValue, colorValue, circleScale,
+                   opacityValue, navigation, setIsFormRegister, isFormRegister,
+                   isLogged, rotateXValue)}
               }
             style={
                 {
@@ -224,25 +278,25 @@ const LoginEntry = () => {
                 }
               }>
 
-        <Animated.Text style={{ color: 'black', fontWeight: 'normal',
-                      fontSize: 16,
-                      paddingBottom: 5,
-                      marginTop: 10,
-                      fontStyle: 'italic',
-                      opacity: opacityLoginText,
-                    }}>
-                      You're not a member yet?
-                    </Animated.Text>
+                <Animated.Text style={{ color: 'black', fontWeight: 'normal',
+                    fontSize: 16,
+                    paddingBottom: 5,
+                    marginTop: 10,
+                    fontStyle: 'italic',
+                    opacity: opacityLoginText,
+                  }}>
+                    {isFormRegister ? "You're already a member?": "You're not a member yet?"}
+                </Animated.Text>
 
-                <Animated.Text style={{ color: 'hsl(10, 90%, 40%)',
+                <Animated.Text style={{ 
+                  color: isFormRegister ? 'hsl(240, 100%, 50%)' : 'hsl(0, 100%, 50%)',
                   opacity: opacityLoginText,
                   fontWeight: '900',
                   fontSize: 20,
-                  //alinear texto
                   textAlign: 'center',
-                  
+                
                 }}>
-                  Register
+                  {isFormRegister ? 'Login': 'Register'}
                 </Animated.Text>
               </Pressable>
               
@@ -262,7 +316,7 @@ export default LoginEntry
 const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(5,5,10,0.85)',
+    backgroundColor: generalColors.overlayLogin,
   },
   gradient: {
     paddingVertical: 10,
@@ -330,6 +384,7 @@ const styles = StyleSheet.create({
     width: 160,
     alignSelf: 'center',
     textAlign: 'center',
+    borderColor: 'black',
   },
   imageLogo: {
     width: 120,
@@ -338,6 +393,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderWidth: 1.5,
     borderColor: 'rgba(255,255,255,0.85)',
+    aspectRatio: 1/1, // To reserve the space of the image.
   },
   buttonLogin: {
     backgroundColor: 'cyan',
@@ -360,5 +416,21 @@ const styles = StyleSheet.create({
     marginVertical: -100,
     color: 'white',
   },
+  iluminatedView: {
+    flex: Platform.OS === 'web' ? 0.85 : 0.98,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: 'hsla(190, 50%, 12%,0.6)',
+    zIndex: 1, // Ensure button is on top
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: Platform.OS ==='web' ? 100 : 55,
+    marginVertical: Platform.OS ==='web' ? 60 : 120,
+    minHeight: 500,
+    borderBottomLeftRadius: 100,
+    borderTopRightRadius: 100,
+  }
+
   });
   

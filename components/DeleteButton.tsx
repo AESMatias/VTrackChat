@@ -12,13 +12,7 @@ interface Props {
 
 export const DeleteButton = ({text, setText}) => {
     
-    
-    // const updateSpeechRecordingStatus = useUserProfileStore( state => state.updateSpeechRecordingStatus);
-    // const speechRecordingStatus = useUserProfileStore( state => state.speechRecordingStatus);
-
-
     const handleToDelete = () => {
-        console.log('AAA', text)
         setText('')
     }
 
@@ -39,9 +33,9 @@ export const DeleteButton = ({text, setText}) => {
 
 const style = StyleSheet.create({
     pressable: {
-        padding:5,
+        padding: 2,
         position: 'absolute',
-        right: 70,
+        right: 60,
         opacity: .5,
     }
 }) 

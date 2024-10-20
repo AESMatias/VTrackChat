@@ -1,4 +1,4 @@
-import { Animated, Easing, Platform } from "react-native";
+import { Animated, Easing} from "react-native";
 
 
 export const LoginAndNavigate = async (
@@ -14,9 +14,9 @@ export const LoginAndNavigate = async (
     return new Promise( (resolve, reject) =>{
 
     const scaleAnimation = Animated.timing(scaleValue, {
-      toValue: Platform.OS === 'web' ? 1.6 : 0.8,
+      toValue: 1.2,
       useNativeDriver: true,
-      duration: 300,
+      duration: 200,
     });
 
     const scaleAnimationUsername = Animated.spring(scaleValueUsername, {
@@ -47,7 +47,7 @@ export const LoginAndNavigate = async (
     
 
     const circleAnimation = Animated.timing(circleScale, {
-      toValue: 300, // Scale up the circle
+      toValue: 200, // Scale up the circle
       duration: 600,
       useNativeDriver: true,
     });
@@ -77,7 +77,6 @@ export const LoginAndNavigate = async (
     }
     // Run animations in sequence
     Animated.sequence([
-      Animated.parallel([
         Animated.parallel([
           circleAnimation,
           opacityAnimation,
@@ -85,7 +84,6 @@ export const LoginAndNavigate = async (
           topValueLogoAnimation,
           scaleAnimationUsername,
         ]),
-      ]),
       // Animated.parallel([
       //   Animated.timing(circleScale, {
       //     toValue: 500, // Reset the circle size
@@ -122,7 +120,11 @@ export const LoginAndNavigate = async (
 export const animateAndNavigate = (
     scaleValue: Animated.Value, colorValue: Animated.Value,
      circleScale: Animated.Value, opacityValue: Animated.Value,
-     navigation: any //TODO: Type this
+     navigation: any, //TODO: Type this
+     setIsFormRegister,
+     isFormRegister: boolean,
+     isLogged: boolean,
+     rotateXValue
 ) => {
     // Define animations
     const scaleAnimation = Animated.spring(scaleValue, {
@@ -137,8 +139,8 @@ export const animateAndNavigate = (
     });
 
     const circleAnimation = Animated.timing(circleScale, {
-      toValue: 300, // Scale up the circle
-      duration: 600,
+      toValue: 200, // Scale up the circle
+      duration: 800,
       useNativeDriver: true,
     });
 
@@ -150,7 +152,7 @@ export const animateAndNavigate = (
     
 
     // Run animations in sequence
-    Animated.sequence([
+    const animationRegister = Animated.sequence([
       Animated.parallel([
         scaleAnimation,
         colorAnimation,
@@ -170,8 +172,8 @@ export const animateAndNavigate = (
           useNativeDriver: false,
         }),
         Animated.timing(circleScale, {
-          toValue: 500, // Reset the circle size
-          duration: 300,
+          toValue: 600, // Reset the circle size
+          duration: 200,
           useNativeDriver: true,
         }),
         Animated.timing(opacityValue, {
@@ -180,13 +182,32 @@ export const animateAndNavigate = (
           useNativeDriver: true,
         })
       ]),
-    ]).start(() => {
+    ]);
+
+  if (isLogged){
+    animationRegister.start(() => {
       // Reset animation values after a delay
       setTimeout(() => {
         scaleValue.setValue(1);
         colorValue.setValue(0);
         circleScale.setValue(1);
         opacityValue.setValue(0);
-      }, 5000); // Adjust delay as needed
+        setIsFormRegister(true);
+      }, 30); // Adjust delay as needed
     });
+  }
+console.log('llegooo')
+    Animated.timing(rotateXValue, {
+      toValue: 1, 
+      duration: 600,
+      // easing: Easing.linear,
+      useNativeDriver: true,
+    }).start();
+    // (()=>{
+    //     if (!isFormRegister){
+    //       rotateXValue.setValue(0);
+    //     }
+    // })
+    ;
+
 };
