@@ -1,0 +1,3 @@
+[submodule "VTrackChat-Backend"]
+	path = VTrackChat-Backend
+	url = https://github.com/AESMatias/VTrackChat-Backend.git
