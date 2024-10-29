@@ -70,7 +70,6 @@ export const TypingZone = ({text, setMessages, setText, messages}: TypingZonePro
         }
     }
 
-
     const handleInputChange = (text: string) => {
         setText(text)
     }

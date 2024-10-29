@@ -16,7 +16,9 @@
     "@react-navigation/drawer": "^6.7.2",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
+    "axios": "1.7.7",
     "compute-cosine-similarity": "^1.1.0",
+    "dotenv": "16.4.5",
     "expo": "~51.0.28",
     "expo-asset": "~10.0.10",
     "expo-blur": "~13.0.2",
@@ -29,7 +31,8 @@
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "^3.0.7",
     "numeric": "^1.2.6",
-    "openai": "^4.67.3",
+    "openai": "4.68.1",
+    "pm2": "5.4.2",
     "react": "^18.2.0",
     "react-hook-form": "^7.53.0",
     "react-native": "0.74.5",
@@ -41,6 +44,7 @@
     "react-native-screens": "^3.34.0",
     "react-native-svg": "^15.7.1",
     "react-native-vector-icons": "^10.2.0",
+    "winston": "3.15.0",
     "zustand": "^5.0.0"
   },
   "devDependencies": {

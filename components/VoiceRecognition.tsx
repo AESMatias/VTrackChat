@@ -60,6 +60,17 @@ export const VoiceRecognitionButton = ({setText}:Props) => {
         }
     }
 
+    Voice.onSpeechResults = (e) => {
+        if (e?.value === undefined) return;
+        try {
+            const lastMessage = e?.value[0]
+            console.log('Voice recognition results:', lastMessage);
+            setText((prevMessage: string) => prevMessage + ' ' + lastMessage); //TODO: solve this!
+        } catch {
+            console.error('Error at voice recognition results');
+        }
+    };
+
 
 
     return (
