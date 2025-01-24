@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { useUserProfileStore } from '../store/userProfile';
 
-const apiUrl = process.env.SERVER_URL || '159.223.193.255';
+// const apiUrl = process.env.SERVER_URL || '159.223.193.255';
+const apiUrl = '159.223.193.255';
 
 export const handleRegisterFunc = async (username: string, password: string) => {
   if (username === "" || password === "") {

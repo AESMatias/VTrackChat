@@ -2,7 +2,8 @@ import { Alert, Linking } from "react-native";
 // import * as Application from "expo-application"; //Expo version
 import Constants from "expo-constants";
 
-const SERVER_URL = process.env.SERVER_URL || '159.223.193.255';
+// const SERVER_URL = process.env.SERVER_URL || '159.223.193.255';
+const SERVER_URL = '159.223.193.255';
 console.log(SERVER_URL);
 
 const currentVersion = Constants?.manifest2?.extra?.expoClient?.version;
@@ -21,10 +22,10 @@ export const checkForUpdate = async () => {
                 data.mandatory ? "Update Required to continue" : "Update Available",
                 `New version ${data.latestVersion} available. ${data.releaseNotes}`,
                 data.mandatory
-                    ? [{ text: "Update Now", onPress: () => Linking.openURL("market://details?id=com.aesmatias.vtrackapp") }]
+                    ? [{ text: "Update Now", onPress: () => Linking.openURL("market://details?id=com.veritres.VTrackChat") }]
                     : [
                           { text: "Later", style: "cancel" },
-                          { text: "Update Now", onPress: () => Linking.openURL("market://details?id=com.aesmatias.vtrackapp") },
+                          { text: "Update Now", onPress: () => Linking.openURL("market://details?id=com.veritres.VTrackChat") },
                       ]
             );
         }

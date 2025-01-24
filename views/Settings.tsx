@@ -21,8 +21,9 @@ export const Settings = () => {
 
     const { username, currentPlan, tokens, loggedIn, token_user, speechLanguage, profilePictureURL, updateProfileStatus, updateSpeechLanguage } = useUserProfileStore();
 
-    const apiUrl = process.env.SERVER_URL || '159.223.193.255';
-
+    // const apiUrl = process.env.SERVER_URL || '159.223.193.255';
+    const apiUrl = '159.223.193.255';
+    
     useEffect(() => {
         
         setCurrentLanguage(speechLanguage);

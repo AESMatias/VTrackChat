@@ -9,7 +9,7 @@ export default {
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "rgba(10,30,80)"
     },
     "ios": {
       "supportsTablet": true
@@ -17,7 +17,7 @@ export default {
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "rgba(10,30,80)"
       },
       "package": "com.veritres.VTrackChat"
     },
