@@ -5,7 +5,7 @@ import axios from 'axios';
 
 
 let openai: OpenAI;
-const apiUrl = process.env.SERVER_URL;
+const apiUrl = process.env.SERVER_URL || '159.223.193.255';
 
 // if (OPENAI_API_KEY) {
 //     openai = new OpenAI({

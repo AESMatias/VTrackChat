@@ -2,7 +2,7 @@ import { Alert, Linking } from "react-native";
 // import * as Application from "expo-application"; //Expo version
 import Constants from "expo-constants";
 
-const SERVER_URL = process.env.SERVER_URL;
+const SERVER_URL = process.env.SERVER_URL || '159.223.193.255';
 console.log(SERVER_URL);
 
 const currentVersion = Constants?.manifest2?.extra?.expoClient?.version;
