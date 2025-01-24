@@ -57,10 +57,17 @@ const apiUrl = process.env.SERVER_URL;
 // };
 
 export const queryOpenAI = async (prompt: string, messages: [], token: string) => {
+
+  prompt = prompt.trim();
   
   const requestBody = {
     prompt: prompt,
-    messages: messages || [],
+    messages: messages || [
+      {
+        role: 'system',
+        content: 'You are a helpful assistant.',
+      },
+    ],
   };
 
   // console.error('probando query con ', apiUrl, token);

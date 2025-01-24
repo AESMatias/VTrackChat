@@ -4,12 +4,14 @@ import { StatusBar } from 'expo-status-bar'
 import { MessageItem } from '@/components/MessageItem'
 import { TypingZone } from '@/components/TypingZone'
 import { AnimatedSocket } from '@/components/AnimatedSocket';
-import { initDatabase, insertQuery} from '@/components/services/SQLite/SQLite'
+// import { initDatabase, insertQuery} from '@/components/services/SQLite/SQLite'
 import { QueryInterface } from '@/components/services/SQLite/types'
-import { getEmbedding } from '@/components/services/openAIQueries'
+// import { getEmbedding } from '@/components/services/openAIQueries'
 import { useUserProfileStore } from '@/store/userProfile'
 import { BlurView } from 'expo-blur'
 import { generalColors } from '@/components/generalColors'
+import {checkForUpdate} from '@/utils/checkAppVersion';
+import { Asset } from 'expo-asset';
 
 export const InitialChat = () => {
 
@@ -29,7 +31,7 @@ export const InitialChat = () => {
     const speechRecordingStatus = useUserProfileStore(state => state.speechRecordingStatus);
 
 
-    const senderImageUrl =  'https://avatars.githubusercontent.com/u/119653204?v=4';
+    const senderImageUrl = Asset.fromModule(require('@/assets/images/VTrackLogo.png')).uri;
     const senderUsername = username;
 
     const datatoPUT = [
@@ -50,12 +52,21 @@ export const InitialChat = () => {
     ]
 
     useEffect(() => {
+
+        const updateResult = checkForUpdate();
+
+        if (!updateResult) {
+            throw new Error('Error checking for updates')
+        }
+
         setDataFetched( () => datatoPUT);
+
         try{
-            initDatabase();
+            // initDatabase();
         } catch (error){
             console.error('Error initializing the database', error)
         }
+
     }, [])
 
     // useEffect(() => {
@@ -78,11 +89,11 @@ export const InitialChat = () => {
         }
 
         try {
-            const embeddingResponse = await getEmbedding(queryObject.queryText);
-            queryObject.embeddings = embeddingResponse;
+            // const embeddingResponse = await getEmbedding(queryObject.queryText);
+            // queryObject.embeddings = embeddingResponse;
 
             // Insert the query into the SQLite database
-            await insertQuery(queryObject);
+            // await insertQuery(queryObject);
 
         } catch (error) {
             console.error('Error processing query in initial chat tsx:', error)
@@ -98,7 +109,7 @@ export const InitialChat = () => {
         //not the last! Should be solved!
 
         //TODO: We should filter in order to gather only the messages that come from the user!
-        processQuery(dataFetched[dataFetched.length-1]?.text)
+        // processQuery(dataFetched[dataFetched.length-1]?.text)
 
         //actualizamos datafetch
         setDataFetched([...dataFetched, {id: dataFetched.length+1,

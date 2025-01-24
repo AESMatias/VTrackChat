@@ -16,14 +16,17 @@ export const handleRegisterFunc = async (username: string, password: string) => 
     });
 
     // If registration is successful, update the Zustand store
-    const { user } = response.data;
+    const { token, user } = response.data;
 
     // Update Zustand store with the new user profile
     useUserProfileStore.getState().updateProfileStatus(
       user.username,
       user.currentPlan,
       user.tokens,
-      true // loggedIn status
+      true, // loggedIn status
+      token,
+      user.speechLanguage,
+      user.profilePictureURL
     );
 
     // Optionally, store the token if returned

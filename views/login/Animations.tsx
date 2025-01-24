@@ -71,7 +71,7 @@ export const LoginAndNavigate = async (
           opacityLogin.setValue(0);
           opacityLoginText.setValue(1);
           topValueLogo.setValue(0);
-          alert("Invalid credentials");
+          // alert("Invalid credentials");
         }, 500); // Adjust delay
       return;
     }
@@ -193,10 +193,10 @@ export const animateAndNavigate = (
         circleScale.setValue(1);
         opacityValue.setValue(0);
         setIsFormRegister(true);
-      }, 30); // Adjust delay as needed
+      }, 30); // Adjust delay
     });
   }
-console.log('llegooo')
+
     Animated.timing(rotateXValue, {
       toValue: 1, 
       duration: 600,

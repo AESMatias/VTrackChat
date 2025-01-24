@@ -12,11 +12,9 @@ import { handleLoginFunc } from "@/utils/HandleLogin";
 import { useEffect } from "react";
 import { Alert } from "react-native";
 
-
 import { LoginAndNavigate, animateAndNavigate } from '@/views/login/Animations';
 import { SubscriptionPlan, useUserProfileStore } from '@/store/userProfile';
-import {checkForUpdate} from '@/utils/checkAppVersion';
-
+import { handleRegisterFunc } from '@/utils/HandleRegister';
 
 const LoginEntry = () => {
 
@@ -76,9 +74,20 @@ const LoginEntry = () => {
 
   const handleLogin = async () => {
 
-    await checkForUpdate();
+    let isUserLogged = {
+      success: false,
+      token: '', 
+      user: {
+      username: 'Anonymous', tokens: 0, subscriptionPlan: SubscriptionPlan.Normal,
+      loggedIn: false, speechLanguage: 'en', profilePictureURL: '',
+      }
+  }; // Initialize the user as not logged
 
-    const isUserLogged = await handleLoginFunc(username,password); //Returns an
+    if (isFormRegister) {
+      isUserLogged = await handleRegisterFunc(username,password); //Returns an
+    } else {
+      isUserLogged = await handleLoginFunc(username,password); //Returns an
+    }
 
     console.log(isUserLogged.success, isUserLogged.token, isUserLogged.user);
 
@@ -91,13 +100,13 @@ const LoginEntry = () => {
 
     if (isUserLogged.success) {
       setIsFormRegister(false);
-      updateProfileStatus(
-        username, 
-        SubscriptionPlan.Normal, 
-        isUserLogged.user.tokens || 1222137, // Use user tokens if available, fallback to default
-        true,
-        isUserLogged.token
-      );// TODO: Change profile
+      // updateProfileStatus( //There is no need, the handleloginfunc updates the store
+      //   username, 
+      //   SubscriptionPlan.Normal, 
+      //   isUserLogged.user.tokens || 1222137, // Use user tokens if available, fallback to default
+      //   true,
+      //   isUserLogged.token
+      // );// TODO: Change profile
       navigation.navigate('InitialChat');
       setIsLogged(false); // Once the user is logged, we change this to false in order to reset the border "animation"
     }
@@ -249,7 +258,7 @@ const LoginEntry = () => {
             </Animated.Text>
           </LinearGradient>)}
 
-          <LinearGradient
+          {/* <LinearGradient
                   colors={['hsl(195, 100%, 60%)', 'hsl(200, 100%, 50%)', 'hsl(220, 100%, 40%)']}
                   style={[styles.gradient, styles.loginButton]}
                   start={{ x: 0, y: 0 }}
@@ -264,7 +273,7 @@ const LoginEntry = () => {
                           },]}>
                             Google OAuth
                 </Animated.Text>
-          </LinearGradient>
+          </LinearGradient> */}
 
             <Animated.View style={[styles.spinner,
               {
@@ -287,7 +296,11 @@ const LoginEntry = () => {
               {
                 animateAndNavigate(scaleValue, colorValue, circleScale,
                    opacityValue, navigation, setIsFormRegister, isFormRegister,
-                   isLogged, rotateXValue)}
+                   isLogged, rotateXValue)
+                  
+                setIsFormRegister(!isFormRegister);
+
+                  }
               }
             style={
                 {

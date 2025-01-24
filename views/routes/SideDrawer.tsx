@@ -1,4 +1,5 @@
 import { InitialChat } from '@/views/InitialChat';
+import { Settings } from '@/views/Settings';
 import LoginEntry from "@/views/login/LoginEntry";
 import { createDrawerNavigator, DrawerContentComponentProps,
     DrawerContentScrollView, DrawerItemList, DrawerItem
@@ -6,9 +7,10 @@ import { createDrawerNavigator, DrawerContentComponentProps,
 import { View, StyleSheet, Image} from 'react-native';
 import { generalColors } from '@/components/generalColors';
 
-export type RootStackParams = {
+export type RootStackParams = { //TODO: Solve this
   LoginEntry: undefined;
   InitialChat: undefined;
+  Settings: undefined;
 }
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
@@ -55,8 +57,8 @@ export const SideDrawer = () => {
         },
         drawerActiveTintColor: 'white',
         drawerActiveBackgroundColor: generalColors.typingZoneInput,
-        drawerInactiveTintColor: 'black',
-        drawerInactiveBackgroundColor: 'black',
+        drawerInactiveTintColor: 'rgba(255, 255, 255, 0.5)',
+        drawerInactiveBackgroundColor: generalColors.typingZoneInput,
         drawerItemStyle: {
             borderRadius: 5,
             marginVertical: 5,
@@ -84,7 +86,11 @@ export const SideDrawer = () => {
            />
 
         <Drawer.Screen name="InitialChat" component={InitialChat}
-        options={{ headerShown: true }}
+                options={{ headerShown: true }}
+        />
+
+        <Drawer.Screen name="Settings" component={Settings}
+                options={{ headerShown: true }}
         />
 
     </Drawer.Navigator>

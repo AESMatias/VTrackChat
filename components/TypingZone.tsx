@@ -49,8 +49,10 @@ export const TypingZone = ({text, setMessages, setText, messages}: TypingZonePro
     }, []);
 
     const handleSendMessage = async () => {
+        
         // setMessages([...messages, text])
         setMessages(prevMessages => [...prevMessages, text]);
+
         try{
             setKeyboardVisible(true);
             Keyboard.dismiss();

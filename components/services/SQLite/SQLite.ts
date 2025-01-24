@@ -1,14 +1,14 @@
 import * as SQLite from 'expo-sqlite';
 import { QueryInterface } from '@/components/services/SQLite/types';
-import { getEmbedding } from '@/components/services/openAIQueries';
+// import { getEmbedding } from '@/components/services/openAIQueries';
 import * as numeric from 'numeric';
 // import cosineSimilarity from 'compute-cosine-similarity'; //TODO: Delete this dependency!
 
 
 export const initDatabase = async () => {
   try {
+    
     const db = await SQLite.openDatabaseAsync('myDatabase.db');
-
 
     const returned = await db.execAsync(`
     PRAGMA journal_mode = WAL;
@@ -177,38 +177,38 @@ function getQueriesByCategory(category: string, callback: (queries: any[]) => vo
 
 
 // Function to retrieve and rank queries based on similarity
-async function getMostSimilarQueries(prompt: string, category: string, topN = 5) {
-  // Step 1: Get embedding for the user query
-  const userEmbedding = await getEmbedding(prompt);
-  if (!userEmbedding) {
-    console.error('Could not get user embedding.');
-    return;
-  }
+// async function getMostSimilarQueries(prompt: string, category: string, topN = 5) {
+//   // Step 1: Get embedding for the user query
+//   const userEmbedding = await getEmbedding(prompt);
+//   if (!userEmbedding) {
+//     console.error('Could not get user embedding.');
+//     return;
+//   }
 
-  const db = SQLite.openDatabase('myDatabase.db'); // Open the database
+//   const db = SQLite.openDatabase('myDatabase.db'); // Open the database
 
-  // Step 2: Fetch all relevant queries and their embeddings
-  db.transaction(tx => {
-    tx.executeSql(
-      'SELECT * FROM queries WHERE category = ?',
-      [category],
-      async (_, result) => {
-        const queries = result.rows._array; // Get the rows as an array
+//   // Step 2: Fetch all relevant queries and their embeddings
+//   db.transaction(tx => {
+//     tx.executeSql(
+//       'SELECT * FROM queries WHERE category = ?',
+//       [category],
+//       async (_, result) => {
+//         const queries = result.rows._array; // Get the rows as an array
         
-        // Step 3: Calculate similarity for each query
-        const similarities = queries.map(query => {
-          const storedEmbedding = new Float32Array(query.embedding); // Convert BLOB to Float32Array
-          const similarity = cosineSimilarity(userEmbedding, storedEmbedding);
-          return { ...query, similarity };
-        });
+//         // Step 3: Calculate similarity for each query
+//         const similarities = queries.map(query => {
+//           const storedEmbedding = new Float32Array(query.embedding); // Convert BLOB to Float32Array
+//           const similarity = cosineSimilarity(userEmbedding, storedEmbedding);
+//           return { ...query, similarity };
+//         });
 
-        // Step 4: Sort and get the top N similar queries
-        similarities.sort((a, b) => b.similarity - a.similarity); // Sort by similarity in descending order
-        const topQueries = similarities.slice(0, topN); // Get top N queries
+//         // Step 4: Sort and get the top N similar queries
+//         similarities.sort((a, b) => b.similarity - a.similarity); // Sort by similarity in descending order
+//         const topQueries = similarities.slice(0, topN); // Get top N queries
 
-        console.log('Most similar queries:', topQueries);
-      },
-      (tx, error) => { console.error('Error fetching queries:', error); }
-    );
-  });
-}
+//         console.log('Most similar queries:', topQueries);
+//       },
+//       (tx, error) => { console.error('Error fetching queries:', error); }
+//     );
+//   });
+// }

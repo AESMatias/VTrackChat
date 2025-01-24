@@ -33,7 +33,8 @@ export const VoiceRecognitionButton = ({setText}:Props) => {
 
     const updateSpeechRecordingStatus = useUserProfileStore( state => state.updateSpeechRecordingStatus);
     const speechRecordingStatus = useUserProfileStore( state => state.speechRecordingStatus);
-
+    const { speechLanguage } = useUserProfileStore();
+    
     const { width } = Dimensions.get('screen');
 
     const handleVibrate = () => {
@@ -42,8 +43,9 @@ export const VoiceRecognitionButton = ({setText}:Props) => {
 
     const startListening = async () => {
         Vibration.vibrate(50);
+        console.error('escuchando en lenguaje', speechLanguage)
         try {
-            await Voice.start(Languages.SPANISH);
+            await Voice.start( speechLanguage === 'en' ? 'en-US' : 'es-ES');
             updateSpeechRecordingStatus(SpeechRecordingStatus.Recording);
         } catch (e) {
             console.error('Error starting voice recognition', e);

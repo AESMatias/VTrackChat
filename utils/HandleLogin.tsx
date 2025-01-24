@@ -13,7 +13,7 @@ export const handleLoginFunc = async (username: string, password: string) => {
   }
 
   username = username.trim();
-  console.error('probando query con ', apiUrl);
+  
   try {
     
     // Send login request to the backend
@@ -33,7 +33,9 @@ export const handleLoginFunc = async (username: string, password: string) => {
       0,
       user.tokens,
       true, // loggedIn status
-      token
+      token,
+      user.speechLanguage,
+      user.profilePictureURL
     );
 
     // Optionally, store token in localStorage or cookies if needed
