@@ -22,7 +22,7 @@ export const Settings = () => {
     const { username, currentPlan, tokens, loggedIn, token_user, speechLanguage, profilePictureURL, updateProfileStatus, updateSpeechLanguage } = useUserProfileStore();
 
     // const apiUrl = process.env.SERVER_URL || '159.223.193.255';
-    const apiUrl = '159.223.193.255';
+    const apiUrl = 'veritres.com';
     
     useEffect(() => {
         
@@ -46,7 +46,7 @@ export const Settings = () => {
         try{
 
         // Send a POST request to the API to update the user language preference
-        const response = await fetch(`http://${apiUrl}:3000/auth/update-profile`, {
+        const response = await fetch(`https://${apiUrl}/auth/update-profile`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

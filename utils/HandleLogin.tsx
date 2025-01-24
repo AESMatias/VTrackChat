@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useUserProfileStore } from '../store/userProfile';
 
 // const apiUrl = process.env.SERVER_URL || '159.223.193.255';
-const apiUrl = '159.223.193.255';
+const apiUrl = 'veritres.com';
 
 export const handleLoginFunc = async (username: string, password: string) => {
 
@@ -18,7 +18,7 @@ export const handleLoginFunc = async (username: string, password: string) => {
     
     // Send login request to the backend
     const response = await axios.post(
-      `http://${apiUrl}:3000/auth/login`,
+      `https://${apiUrl}/auth/login`,
       { email: username, password: password },
       { headers: { 'Content-Type': 'application/json' } }
     );

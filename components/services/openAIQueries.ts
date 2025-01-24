@@ -6,7 +6,7 @@ import axios from 'axios';
 
 let openai: OpenAI;
 // const apiUrl = process.env.SERVER_URL || '159.223.193.255';
-const apiUrl = '159.223.193.255';
+const apiUrl = 'veritres.com';
 
 // if (OPENAI_API_KEY) {
 //     openai = new OpenAI({
@@ -73,7 +73,7 @@ export const queryOpenAI = async (prompt: string, messages: [], token: string) =
 
   // console.error('probando query con ', apiUrl, token);
   try {
-    const response = await fetch(`http://${apiUrl}:3000/openai/query`, {
+    const response = await fetch(`https://${apiUrl}/openai/query`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

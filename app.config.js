@@ -9,17 +9,22 @@ export default {
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "rgba(10,30,80)"
+      "backgroundColor": "#102339"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
+        "bundleIdentifier": "com.veritres.vtrackchat",
+        "versionCode": 2,
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "rgba(10,30,80)"
+        "backgroundColor": "#102339"
       },
-      "package": "com.veritres.VTrackChat"
+      "package": "com.veritres.vtrackchat",
+      "permissions": [
+        "RECORD_AUDIO"
+      ],
     },
     "web": {
       "favicon": "./assets/favicon.png"

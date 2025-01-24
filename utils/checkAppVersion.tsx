@@ -3,13 +3,13 @@ import { Alert, Linking } from "react-native";
 import Constants from "expo-constants";
 
 // const SERVER_URL = process.env.SERVER_URL || '159.223.193.255';
-const SERVER_URL = '159.223.193.255';
+const SERVER_URL = 'veritres.com';
 console.log(SERVER_URL);
 
 const currentVersion = Constants?.manifest2?.extra?.expoClient?.version;
 // const currentVersion = Application.nativeApplicationVersion; // Expo
 
-const CHECK_UPDATE_URL = `http://${SERVER_URL}:3000/VTrackApp/android/versions/${currentVersion}/check-update`;
+const CHECK_UPDATE_URL = `https://${SERVER_URL}/VTrackApp/android/versions/${currentVersion}/check-update`;
 
 export const checkForUpdate = async () => {
 
@@ -22,10 +22,10 @@ export const checkForUpdate = async () => {
                 data.mandatory ? "Update Required to continue" : "Update Available",
                 `New version ${data.latestVersion} available. ${data.releaseNotes}`,
                 data.mandatory
-                    ? [{ text: "Update Now", onPress: () => Linking.openURL("market://details?id=com.veritres.VTrackChat") }]
+                    ? [{ text: "Update Now", onPress: () => Linking.openURL("market://details?id=com.veritres.vtrackchat") }]
                     : [
                           { text: "Later", style: "cancel" },
-                          { text: "Update Now", onPress: () => Linking.openURL("market://details?id=com.veritres.VTrackChat") },
+                          { text: "Update Now", onPress: () => Linking.openURL("market://details?id=com.veritres.vtrackchat") },
                       ]
             );
         }
